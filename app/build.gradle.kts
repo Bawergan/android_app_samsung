@@ -45,6 +45,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.ui:ui-layout:0.1.0-dev14")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -57,18 +58,13 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    // JetPack Compose -------------------------------------------
-    // FROM https://developer.android.com/develop/ui/compose/setup#kotlin
     val composeBom = platform("androidx.compose:compose-bom:2024.03.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
-
-    // Material Design 3
+    implementation ("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.compose.material3:material3")
 
-    // Android Studio Preview support
     debugImplementation("androidx.compose.ui:ui-tooling")
 
-    // Optional - Integration with activities
     implementation("androidx.activity:activity-compose:1.8.2")
 }
