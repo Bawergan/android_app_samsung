@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.example.final_project_samsung.logic.HomeScreen
+import com.example.final_project_samsung.ui.HomeScreen
 
 
 class MainActivity : AppCompatActivity() {
@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             MainTheme {
-                Surface(Modifier.fillMaxSize()) {
+                Surface(modifier = Modifier.fillMaxSize()) {
                     HomeScreen()
                 }
             }

@@ -1,4 +1,4 @@
-package com.example.final_project_samsung.logic
+package com.example.final_project_samsung.ui
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf

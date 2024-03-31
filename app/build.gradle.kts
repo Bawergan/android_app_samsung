@@ -61,10 +61,8 @@ dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2024.03.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
-    implementation ("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.compose.material3:material3")
-
     debugImplementation("androidx.compose.ui:ui-tooling")
-
     implementation("androidx.activity:activity-compose:1.8.2")
 }

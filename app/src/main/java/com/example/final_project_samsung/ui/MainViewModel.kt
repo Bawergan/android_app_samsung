@@ -1,4 +1,4 @@
-package com.example.final_project_samsung.logic
+package com.example.final_project_samsung.ui
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.util.Calendar
 
 class MainViewModel : ViewModel() {
-    private val TAG = "MainViewModel"
+    private val tag = "MainViewModel"
     private val _uiState = MutableStateFlow(AppUiState())
     val uiState: StateFlow<AppUiState> = _uiState.asStateFlow()
 
@@ -24,7 +24,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun editEvent(id: Int) {
-        TODO("Not yet implemented")
+
     }
 
     fun deleteEvent(id: Int) {
@@ -42,7 +42,7 @@ class MainViewModel : ViewModel() {
         newEvent.start()
         _uiState.value.eventList.add(newEvent)
 
-        Log.d(TAG, "${_uiState.value.eventList}, ${_uiState.value.activeEventId}")
+        Log.d(tag, "${_uiState.value.eventList}, ${_uiState.value.activeEventId}")
 
     }
 
