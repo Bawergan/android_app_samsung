@@ -13,7 +13,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -72,8 +71,8 @@ fun DateBottomSheet(eventViewModel: MainViewModel, appUiState: AppUiState) {
     var newName by remember { mutableStateOf("") }
 
     BottomSheetScaffold(
+        sheetPeekHeight = 128.dp,
         sheetContent = {
-            Text(text = "${appUiState.activeEventId.value}")
             Row(
                 Modifier
                     .padding(8.dp)
@@ -108,16 +107,14 @@ fun DateBottomSheet(eventViewModel: MainViewModel, appUiState: AppUiState) {
                     )
                 }
             }
-            Row(Modifier.fillMaxWidth()) {
-                TextField(
-                    value = newName,
-                    onValueChange = { newName = it },
-                    placeholder = { Text(text = "Name") })
-            }
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = newName,
+                onValueChange = { newName = it },
+                placeholder = { Text(text = "Name") })
         },
         scaffoldState = bottomSheetScaffoldState,
-//        sheetPeekHeight = 0.dp,
-        sheetDragHandle = { BottomSheetDefaults.DragHandle() }
+        sheetDragHandle = { }
     ) {
 
     }
@@ -128,10 +125,10 @@ fun ItemEvent(appUiState: AppUiState, event: CardEventData) {
     Card(
         Modifier
             .padding(7.dp)
-            .clickable { appUiState.activeEventId.value = event.id }
+            .clickable { appUiState.activeEventId.value = event.eventId }
     ) {
         Column(modifier = Modifier.padding(7.dp)) {
-            Text(text = "id: ${event.id}, name: ${event.name}")
+            Text(text = "id: ${event.eventId}, name: ${event.name}")
             Text(text = "${event.tag} at ${event.time}")
         }
     }

@@ -9,9 +9,9 @@ class EventData(val id: Int) {
     var endTime: Date = Calendar.getInstance().time
     //TODO colors
     fun start(){
-        tags.add("started")
     }
     fun end(){
+        endTime = Calendar.getInstance().time
         tags.add("ended")
     }
 }

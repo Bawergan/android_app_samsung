@@ -9,4 +9,4 @@ class AppUiState {
     var eventCardList = mutableStateListOf<CardEventData>()
 }
 
-class CardEventData(val id: Int, val time: Date, val tag: String, val name: String)
+data class CardEventData(val eventId: Int, val time: Date, val tag: String, val name: String)
