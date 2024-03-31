@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import java.util.Date
 
 class AppUiState {
-    var activeEventId = mutableStateOf<Int?>(null)
+    var activeEventCard = mutableStateOf<CardEventData?>(null)
     var eventCardList = mutableStateListOf<CardEventData>()
 }
 

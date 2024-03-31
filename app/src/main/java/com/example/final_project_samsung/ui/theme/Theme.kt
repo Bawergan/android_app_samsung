@@ -1,4 +1,4 @@
-package com.example.final_project_samsung
+package com.example.final_project_samsung.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -14,13 +14,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
-import com.example.final_project_samsung.ui.theme.Pink40
-import com.example.final_project_samsung.ui.theme.Pink80
-import com.example.final_project_samsung.ui.theme.Purple40
-import com.example.final_project_samsung.ui.theme.Purple80
-import com.example.final_project_samsung.ui.theme.PurpleGrey40
-import com.example.final_project_samsung.ui.theme.PurpleGrey80
-import com.example.final_project_samsung.ui.theme.Typography
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,

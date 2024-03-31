@@ -13,7 +13,7 @@ class MainViewModel : ViewModel() {
 
     private var eventList = mutableListOf<EventData>()
 
-    fun getEventWithId(id: Int): EventData {
+    private fun getEventWithId(id: Int): EventData {
         lateinit var myEvent: EventData
         for (event in eventList) {
             if (event.id == id) {
@@ -47,7 +47,7 @@ class MainViewModel : ViewModel() {
         eventList.add(newEvent)
         updateListOfEventCard()
 
-        Log.d(tag, "${eventList}, ${_uiState.value.activeEventId}")
+        Log.d(tag, "${eventList}, ${_uiState.value.activeEventCard}")
     }
 
     private var counter = 0
