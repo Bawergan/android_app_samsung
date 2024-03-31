@@ -12,38 +12,43 @@ class MainViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(AppUiState())
     val uiState: StateFlow<AppUiState> = _uiState.asStateFlow()
 
+    var eventList = mutableListOf<EventData>()
+
     fun endEvent(id: Int) {
         lateinit var myEvent: EventData
-        for (event in _uiState.value.eventList) {
+        for (event in eventList) {
             if (event.id == id) {
                 myEvent = event
             }
         }
-        myEvent.endTime = Calendar.getInstance().time
-        myEvent.end()
+        if ("ended" !in myEvent.tags) {
+            myEvent.endTime = Calendar.getInstance().time
+            myEvent.end()
+        }
+        generateListOfEventCard()
     }
 
     fun editEvent(id: Int) {
-
     }
 
     fun deleteEvent(id: Int) {
         lateinit var myEvent: EventData
-        for (event in _uiState.value.eventList) {
+        for (event in eventList) {
             if (event.id == id) {
                 myEvent = event
             }
         }
-        _uiState.value.eventList.remove(myEvent)
+        eventList.remove(myEvent)
+        generateListOfEventCard()
     }
 
     fun addEventStart() {
         val newEvent = EventData(getNewId())
         newEvent.start()
-        _uiState.value.eventList.add(newEvent)
+        eventList.add(newEvent)
+        generateListOfEventCard()
 
-        Log.d(tag, "${_uiState.value.eventList}, ${_uiState.value.activeEventId}")
-
+        Log.d(tag, "${eventList}, ${_uiState.value.activeEventId}")
     }
 
     private var counter = 0
@@ -51,4 +56,17 @@ class MainViewModel : ViewModel() {
         return counter++
     }
 
+    fun generateListOfEventCard() {
+        if (_uiState.value.eventCardList.size != 0) {
+            _uiState.value.eventCardList.removeRange(0, _uiState.value.eventCardList.size)
+        }
+        for (event in eventList) {
+            _uiState.value.eventCardList.add(CardEventData(event.id, event.startTime, "started"))
+            if ("ended" in event.tags) {
+                _uiState.value.eventCardList.add(CardEventData(event.id, event.endTime, "ended"))
+            }
+        }
+        _uiState.value.eventCardList.sortBy { it.time }
+    }
 }
+

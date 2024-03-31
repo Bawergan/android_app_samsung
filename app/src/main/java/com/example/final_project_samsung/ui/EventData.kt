@@ -4,14 +4,14 @@ import java.util.Calendar
 import java.util.Date
 
 class EventData(val id: Int) {
-    var tagsEvent: MutableList<String> = listOf("").toMutableList()
+    var tags: MutableList<String> = listOf("").toMutableList()
     var startTime: Date = Calendar.getInstance().time
     var endTime: Date = Calendar.getInstance().time
     //TODO colors
     fun start(){
-        tagsEvent.add("started")
+        tags.add("started")
     }
     fun end(){
-        tagsEvent.add("ended")
+        tags.add("ended")
     }
 }

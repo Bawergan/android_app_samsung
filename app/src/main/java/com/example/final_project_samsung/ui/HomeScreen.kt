@@ -4,8 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -54,7 +52,7 @@ fun HomeScreen(viewModel: MainViewModel = viewModel()) {
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             LazyColumn {
-                items(appUiState.eventList) { ItemEvent(appUiState, it) }
+                items(appUiState.eventCardList) { ItemEvent(appUiState, it) }
             }
         }
         if (appUiState.activeEventId.value != null) {
@@ -114,22 +112,15 @@ fun DateBottomSheet(eventViewModel: MainViewModel, appUiState: AppUiState) {
 }
 
 @Composable
-fun ItemEvent(appUiState: AppUiState, event: EventData) {
+fun ItemEvent(appUiState: AppUiState, event: CardEventData) {
     Card(
         Modifier
             .padding(7.dp)
             .clickable { appUiState.activeEventId.value = event.id }
     ) {
         Column(modifier = Modifier.padding(7.dp)) {
-            Text(
-                text = "id: ${event.id}",
-            )
-            Text(text = "started at ${event.startTime}")
-            if ("ended" in event.tagsEvent) {
-                Text(text = "ended at ${event.endTime}")
-            }
-            Spacer(Modifier.fillMaxHeight())
-            Text(text = "tags: ${event.tagsEvent}")
+            Text(text = "id: ${event.id}")
+            Text(text = "${event.tag} at ${event.time}")
         }
     }
 }
