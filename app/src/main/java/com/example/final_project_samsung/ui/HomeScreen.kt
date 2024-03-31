@@ -22,17 +22,20 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun HomeScreen(viewModel: MainViewModel = viewModel()) {
-//    val viewModel = MainViewModel()
     val appUiState by viewModel.uiState.collectAsState()
     Scaffold(
         floatingActionButton = {
@@ -65,6 +68,9 @@ fun HomeScreen(viewModel: MainViewModel = viewModel()) {
 @Composable
 fun DateBottomSheet(eventViewModel: MainViewModel, appUiState: AppUiState) {
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState()
+
+    var newName by remember { mutableStateOf("") }
+
     BottomSheetScaffold(
         sheetContent = {
             Text(text = "${appUiState.activeEventId.value}")
@@ -84,7 +90,7 @@ fun DateBottomSheet(eventViewModel: MainViewModel, appUiState: AppUiState) {
                     )
                 }
                 Button(onClick = {
-                    eventViewModel.editEvent(appUiState.activeEventId.value!!)
+                    eventViewModel.editEvent(appUiState.activeEventId.value!!, newName)
                     appUiState.activeEventId.value = null
                 }) {
                     Icon(
@@ -101,6 +107,12 @@ fun DateBottomSheet(eventViewModel: MainViewModel, appUiState: AppUiState) {
                         "End event"
                     )
                 }
+            }
+            Row(Modifier.fillMaxWidth()) {
+                TextField(
+                    value = newName,
+                    onValueChange = { newName = it },
+                    placeholder = { Text(text = "Name") })
             }
         },
         scaffoldState = bottomSheetScaffoldState,
@@ -119,7 +131,7 @@ fun ItemEvent(appUiState: AppUiState, event: CardEventData) {
             .clickable { appUiState.activeEventId.value = event.id }
     ) {
         Column(modifier = Modifier.padding(7.dp)) {
-            Text(text = "id: ${event.id}")
+            Text(text = "id: ${event.id}, name: ${event.name}")
             Text(text = "${event.tag} at ${event.time}")
         }
     }

@@ -28,7 +28,15 @@ class MainViewModel : ViewModel() {
         generateListOfEventCard()
     }
 
-    fun editEvent(id: Int) {
+    fun editEvent(id: Int, newName: String) {
+        lateinit var myEvent: EventData
+        for (event in eventList) {
+            if (event.id == id) {
+                myEvent = event
+            }
+        }
+        myEvent.tags[0] = newName
+        generateListOfEventCard()
     }
 
     fun deleteEvent(id: Int) {
@@ -56,14 +64,14 @@ class MainViewModel : ViewModel() {
         return counter++
     }
 
-    fun generateListOfEventCard() {
+    private fun generateListOfEventCard() {
         if (_uiState.value.eventCardList.size != 0) {
             _uiState.value.eventCardList.removeRange(0, _uiState.value.eventCardList.size)
         }
         for (event in eventList) {
-            _uiState.value.eventCardList.add(CardEventData(event.id, event.startTime, "started"))
+            _uiState.value.eventCardList.add(CardEventData(event.id, event.startTime, "started", event.tags[0]))
             if ("ended" in event.tags) {
-                _uiState.value.eventCardList.add(CardEventData(event.id, event.endTime, "ended"))
+                _uiState.value.eventCardList.add(CardEventData(event.id, event.endTime, "ended", event.tags[0]))
             }
         }
         _uiState.value.eventCardList.sortBy { it.time }
