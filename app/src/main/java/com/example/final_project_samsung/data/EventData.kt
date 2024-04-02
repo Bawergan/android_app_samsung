@@ -4,7 +4,7 @@ import java.util.Calendar
 import java.util.Date
 
 class EventData(val id: Int) {
-    val eventTags = mutableListOf("(No title)")
+    val eventTags: MutableList<String> = mutableListOf("(No title)")
     val eventGroups: MutableList<String> = mutableListOf()
     var startTime: Date = Calendar.getInstance().time
     var endTime: Date = Calendar.getInstance().time
@@ -20,5 +20,9 @@ class EventData(val id: Int) {
 
     fun addEventToGroup(group: String) {
         eventGroups.add(group)
+    }
+
+    fun editEventName(newName: String){
+        eventTags[0] = newName
     }
 }

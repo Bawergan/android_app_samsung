@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">Final_project_samsung</string>
+    <string name="app_name" translatable="false">Final_project_samsung</string>
+    <string name="no_name_event_default">New event</string>
+    <string name="no_name_group_default">New group</string>
 </resources>

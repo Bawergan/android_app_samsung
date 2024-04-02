@@ -12,7 +12,6 @@ import com.example.final_project_samsung.ui.theme.MainTheme
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             MainTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="no_name_event_default">Новый эвент</string>
+    <string name="no_name_group_default">Новая группа</string>
+</resources>

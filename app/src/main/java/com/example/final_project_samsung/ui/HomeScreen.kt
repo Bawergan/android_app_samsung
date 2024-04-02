@@ -39,6 +39,7 @@ import java.util.Locale
 
 @Composable
 fun HomeScreen(viewModel: MainViewModel = viewModel()) {
+
     val appUiState by viewModel.uiState.collectAsState()
     MainUIScreenLayout(viewModel, appUiState)
 }
@@ -86,7 +87,7 @@ fun FloatingActionColumnOfButtons(viewModel: MainViewModel, appUiState: AppUiSta
             Spacer(modifier = Modifier.size(10.dp))
         }
 
-        LargeFloatingActionButton(onClick = { viewModel.addEventStart() }) {
+        LargeFloatingActionButton(onClick = { viewModel.addNewEvent() }) {
             Icon(
                 Icons.Filled.Add, "add time stamp"
             )
@@ -112,7 +113,7 @@ fun EditingModalBottomSheet(viewModel: MainViewModel, appUiState: AppUiState) {
 
             Column {
                 Button(onClick = {
-                    viewModel.editEvent(activeEvent.id, newName)
+                    viewModel.editEventName(activeEvent.id, newName)
                     appUiState.isInEditMode.value = false
                 }) { Text(text = "Save") }
                 TextField(modifier = Modifier.fillMaxWidth(),

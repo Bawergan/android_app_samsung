@@ -32,8 +32,8 @@ class MainViewModel : ViewModel() {
         updateListOfEventCard()
     }
 
-    fun editEvent(id: Int, newName: String) {
-        getEventWithId(id).eventTags[0] = newName
+    fun editEventName(id: Int, newName: String) {
+        getEventWithId(id).editEventName(newName)
         updateListOfEventCard()
     }
 
@@ -42,7 +42,7 @@ class MainViewModel : ViewModel() {
         updateListOfEventCard()
     }
 
-    fun addEventStart() {
+    fun addNewEvent() {
         val newEvent = EventData(getNewId())
         newEvent.onEventStart()
         eventList.add(newEvent)
@@ -52,7 +52,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun addTagToEvent(id: Int, newTag: String) {
-        getEventWithId(id).eventGroups.add(newTag)
+        getEventWithId(id).addEventToGroup(newTag)
         updateListOfEventCard()
     }
 
