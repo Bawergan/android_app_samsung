@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import com.example.final_project_samsung.ui.HomeScreen
 import com.example.final_project_samsung.ui.theme.MainTheme
 
-
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

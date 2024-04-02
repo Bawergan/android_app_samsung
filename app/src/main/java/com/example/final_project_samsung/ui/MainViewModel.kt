@@ -2,6 +2,7 @@ package com.example.final_project_samsung.ui
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.example.final_project_samsung.data.EventData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,7 +14,7 @@ class MainViewModel : ViewModel() {
 
     private var eventList = mutableListOf<EventData>()
 
-    private fun getEventWithId(id: Int): EventData {
+    fun getEventWithId(id: Int): EventData {
         lateinit var myEvent: EventData
         for (event in eventList) {
             if (event.id == id) {
@@ -25,14 +26,14 @@ class MainViewModel : ViewModel() {
 
     fun endEvent(id: Int) {
         val event = getEventWithId(id)
-        if ("ended" !in event.tags) {
-            event.end()
+        if ("ended" !in event.eventTags) {
+            event.onEventEnd()
         }
         updateListOfEventCard()
     }
 
     fun editEvent(id: Int, newName: String) {
-        getEventWithId(id).tags[0] = newName
+        getEventWithId(id).eventTags[0] = newName
         updateListOfEventCard()
     }
 
@@ -43,11 +44,16 @@ class MainViewModel : ViewModel() {
 
     fun addEventStart() {
         val newEvent = EventData(getNewId())
-        newEvent.start()
+        newEvent.onEventStart()
         eventList.add(newEvent)
         updateListOfEventCard()
 
         Log.d(tag, "${eventList}, ${_uiState.value.activeEventCard}")
+    }
+
+    fun addTagToEvent(id: Int, newTag: String) {
+        getEventWithId(id).eventGroups.add(newTag)
+        updateListOfEventCard()
     }
 
     private var counter = 0
@@ -55,28 +61,24 @@ class MainViewModel : ViewModel() {
         return counter++
     }
 
+    private fun newCard(event: EventData, tag: String): CardEventData {
+        return CardEventData(
+            event.id,
+            event.startTime,
+            tag,
+            event.eventTags[0],
+            event.eventGroups
+        )
+    }
+
     private fun updateListOfEventCard() {
         if (_uiState.value.eventCardList.size != 0) {
             _uiState.value.eventCardList.removeRange(0, _uiState.value.eventCardList.size)
         }
         for (event in eventList) {
-            _uiState.value.eventCardList.add(
-                CardEventData(
-                    event.id,
-                    event.startTime,
-                    "started",
-                    event.tags[0]
-                )
-            )
-            if ("ended" in event.tags) {
-                _uiState.value.eventCardList.add(
-                    CardEventData(
-                        event.id,
-                        event.endTime,
-                        "ended",
-                        event.tags[0]
-                    )
-                )
+            _uiState.value.eventCardList.add(newCard(event, "started"))
+            if ("ended" in event.eventTags) {
+                _uiState.value.eventCardList.add(newCard(event, "ended"))
             }
         }
         _uiState.value.eventCardList.sortBy { it.time }

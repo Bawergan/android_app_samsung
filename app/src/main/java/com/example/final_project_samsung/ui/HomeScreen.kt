@@ -8,15 +8,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -36,11 +40,11 @@ import java.util.Locale
 @Composable
 fun HomeScreen(viewModel: MainViewModel = viewModel()) {
     val appUiState by viewModel.uiState.collectAsState()
-    MainUIScreen(viewModel, appUiState)
+    MainUIScreenLayout(viewModel, appUiState)
 }
 
 @Composable
-fun MainUIScreen(viewModel: MainViewModel, appUiState: AppUiState){
+fun MainUIScreenLayout(viewModel: MainViewModel, appUiState: AppUiState) {
     Scaffold(
         floatingActionButton = {
             FloatingActionColumnOfButtons(viewModel, appUiState)
@@ -53,6 +57,7 @@ fun MainUIScreen(viewModel: MainViewModel, appUiState: AppUiState){
                 items(appUiState.eventCardList) { ItemEvent(appUiState, it) }
             }
         }
+        EditingModalBottomSheet(viewModel, appUiState)
     }
 }
 
@@ -70,8 +75,7 @@ fun FloatingActionColumnOfButtons(viewModel: MainViewModel, appUiState: AppUiSta
             Spacer(modifier = Modifier.size(5.dp))
             FloatingActionButton(
                 onClick = {
-//                    viewModel.editEvent(activeEventCard.eventId, newName)
-                    appUiState.activeEventCard.value = null
+                    appUiState.isInEditMode.value = true
                 }) { Text(text = "Edit") }
             Spacer(modifier = Modifier.size(5.dp))
             FloatingActionButton(
@@ -90,6 +94,55 @@ fun FloatingActionColumnOfButtons(viewModel: MainViewModel, appUiState: AppUiSta
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditingModalBottomSheet(viewModel: MainViewModel, appUiState: AppUiState) {
+    if (appUiState.isInEditMode.value && appUiState.activeEventCard.value != null) {
+        val activeEvent = viewModel.getEventWithId(appUiState.activeEventCard.value!!.eventId)
+        ModalBottomSheet(onDismissRequest = {
+            appUiState.isInEditMode.value = false
+            appUiState.activeEventCard.value = null
+        }) {
+            var newName by remember { mutableStateOf("") }
+            if (activeEvent.eventTags[0] != "(No title)") {
+                newName = activeEvent.eventTags[0]
+            }
+
+            var newTag by remember { mutableStateOf("") }
+
+            Column {
+                Button(onClick = {
+                    viewModel.editEvent(activeEvent.id, newName)
+                    appUiState.isInEditMode.value = false
+                }) { Text(text = "Save") }
+                TextField(modifier = Modifier.fillMaxWidth(),
+                    value = newName,
+                    onValueChange = { newName = it },
+                    placeholder = { Text(text = "Add title") })
+                Text(
+                    text = SimpleDateFormat(
+                        "dd.MM.yyy; HH:mm",
+                        Locale.US
+                    ).format(activeEvent.startTime)
+                )
+                LazyVerticalGrid(columns = GridCells.Adaptive(100.dp)) {
+                    items(viewModel.getEventWithId(activeEvent.id).eventGroups) {
+                        Text(text = it)
+                    }
+                }
+                Button(onClick = {
+                    viewModel.addTagToEvent(activeEvent.id, newTag)
+                }) { Text(text = "Add tag") }
+                TextField(modifier = Modifier.fillMaxWidth(),
+                    value = newTag,
+                    onValueChange = { newTag = it },
+                    placeholder = { Text(text = "Add tag") }
+                )
+            }
+        }
+    }
+}
+
 @Composable
 fun ItemEvent(appUiState: AppUiState, eventCard: CardEventData) {
     Card(
@@ -101,28 +154,4 @@ fun ItemEvent(appUiState: AppUiState, eventCard: CardEventData) {
             Text(text = "${eventCard.tag} at ${eventCard.time.hours}:${eventCard.time.minutes}")
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DateBottomSheet(eventViewModel: MainViewModel, appUiState: AppUiState) {
-    val activeEventCard = appUiState.activeEventCard.value!!
-    var newName by remember { mutableStateOf("") }
-    if (activeEventCard.name != "(No title)") {
-        newName = activeEventCard.name
-    }
-    BottomSheetScaffold(
-        sheetContent = {
-            TextField(modifier = Modifier.fillMaxWidth(),
-                value = newName,
-                onValueChange = { newName = it },
-                placeholder = { Text(text = "Add title") })
-            Text(
-                text = SimpleDateFormat(
-                    "dd.MM.yyy; HH:mm",
-                    Locale.US
-                ).format(activeEventCard.time)
-            )
-        },
-    ) {}
 }

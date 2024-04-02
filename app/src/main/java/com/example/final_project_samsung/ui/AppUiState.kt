@@ -7,6 +7,7 @@ import java.util.Date
 class AppUiState {
     var activeEventCard = mutableStateOf<CardEventData?>(null)
     var eventCardList = mutableStateListOf<CardEventData>()
+    var isInEditMode = mutableStateOf(false )
 }
 
-data class CardEventData(val eventId: Int, val time: Date, val tag: String, val name: String)
+data class CardEventData(val eventId: Int, val time: Date, val tag: String, val name: String, val cardEventGroup: List<String>)
