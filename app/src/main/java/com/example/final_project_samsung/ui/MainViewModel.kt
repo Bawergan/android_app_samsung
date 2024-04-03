@@ -37,6 +37,12 @@ class MainViewModel : ViewModel() {
         }
         _uiState.value.eventCardList.sortBy { it.time }
     }
+
+    fun addEventToGroup(eventId: Int, groupId: Int) {
+        val myEvent = eventList.getEventWithId(eventId)
+        val myGroup = groupList.getGroupWithId(groupId)
+        myGroup.eventsInGroupIds.add(myEvent.id)
+    }
 }
 
 class EventList {
@@ -67,8 +73,7 @@ class EventList {
         eventList.remove(getEventWithId(id))
     }
 
-    fun addNewEvent() {
-        val newEvent = EventData(getNewId())
+    fun addEventToList(newEvent: EventData) {
         newEvent.onEventStart()
         eventList.add(newEvent)
     }
@@ -78,11 +83,30 @@ class EventList {
     }
 
     private var counter = 0
-    private fun getNewId(): Int {
+    fun getNewId(): Int {
         return counter++
     }
 }
 
 class GroupList {
     val groupList = mutableListOf<GroupData>()
+
+    fun addNewGroup() {
+        groupList.add(GroupData(getNewId()))
+    }
+
+    private var counter = 0
+    private fun getNewId(): Int {
+        return counter++
+    }
+
+    fun getGroupWithId(id: Int): GroupData {
+        lateinit var myGroup: GroupData
+        for (group in groupList) {
+            if (group.id == id) {
+                myGroup = group
+            }
+        }
+        return myGroup
+    }
 }

@@ -1,13 +1,14 @@
 package com.example.final_project_samsung.ui
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -34,12 +35,15 @@ import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.final_project_samsung.data.EventData
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
 fun HomeScreen(viewModel: MainViewModel = viewModel()) {
-
+    if (viewModel.groupList.groupList.size == 0) {
+        viewModel.groupList.addNewGroup()
+    }
     val appUiState by viewModel.uiState.collectAsState()
     MainUIScreenLayout(viewModel, appUiState)
 }
@@ -49,16 +53,27 @@ fun MainUIScreenLayout(viewModel: MainViewModel, appUiState: AppUiState) {
     Scaffold(
         floatingActionButton = {
             FloatingActionColumnOfButtons(viewModel, appUiState)
-        }) { innerPadding ->
-        Column(
-            modifier = Modifier.padding(innerPadding),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            LazyColumn {
-                items(appUiState.eventCardList) { ItemEvent(appUiState, it) }
-            }
+        }) {
+        Box(modifier = Modifier.padding(it)) {
+            GroupsAndEventsLazyView(viewModel, appUiState)
         }
         EditingModalBottomSheet(viewModel, appUiState)
+    }
+}
+
+@Composable
+fun GroupsAndEventsLazyView(viewModel: MainViewModel, appUiState: AppUiState) {
+    LazyRow {
+        items(viewModel.groupList.groupList) {
+            val currentGroup = it
+            LazyColumn {
+                items(appUiState.eventCardList) { cardEventData ->
+                    if (cardEventData.eventId in currentGroup.eventsInGroupIds) {
+                        ItemEvent(appUiState, cardEventData)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -90,7 +105,9 @@ fun FloatingActionColumnOfButtons(viewModel: MainViewModel, appUiState: AppUiSta
         }
 
         LargeFloatingActionButton(onClick = {
-            viewModel.eventList.addNewEvent()
+            val newEvent = EventData(viewModel.eventList.getNewId())
+            viewModel.eventList.addEventToList(newEvent)
+            viewModel.addEventToGroup(newEvent.id, viewModel.groupList.groupList[0].id)
             viewModel.updateListOfEventCard()
         }) {
             Icon(
