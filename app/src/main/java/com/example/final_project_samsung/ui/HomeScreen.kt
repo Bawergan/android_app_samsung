@@ -70,7 +70,8 @@ fun FloatingActionColumnOfButtons(viewModel: MainViewModel, appUiState: AppUiSta
 
             FloatingActionButton(
                 onClick = {
-                    viewModel.deleteEvent(activeEventCard.eventId)
+                    viewModel.eventList.deleteEvent(activeEventCard.eventId)
+                    viewModel.updateListOfEventCard()
                     appUiState.activeEventCard.value = null
                 }) { Text(text = "Delete") }
             Spacer(modifier = Modifier.size(5.dp))
@@ -81,13 +82,17 @@ fun FloatingActionColumnOfButtons(viewModel: MainViewModel, appUiState: AppUiSta
             Spacer(modifier = Modifier.size(5.dp))
             FloatingActionButton(
                 onClick = {
-                    viewModel.endEvent(activeEventCard.eventId)
+                    viewModel.eventList.endEvent(activeEventCard.eventId)
+                    viewModel.updateListOfEventCard()
                     appUiState.activeEventCard.value = null
                 }) { Text(text = "End") }
             Spacer(modifier = Modifier.size(10.dp))
         }
 
-        LargeFloatingActionButton(onClick = { viewModel.addNewEvent() }) {
+        LargeFloatingActionButton(onClick = {
+            viewModel.eventList.addNewEvent()
+            viewModel.updateListOfEventCard()
+        }) {
             Icon(
                 Icons.Filled.Add, "add time stamp"
             )
@@ -99,7 +104,8 @@ fun FloatingActionColumnOfButtons(viewModel: MainViewModel, appUiState: AppUiSta
 @Composable
 fun EditingModalBottomSheet(viewModel: MainViewModel, appUiState: AppUiState) {
     if (appUiState.isInEditMode.value && appUiState.activeEventCard.value != null) {
-        val activeEvent = viewModel.getEventWithId(appUiState.activeEventCard.value!!.eventId)
+        val activeEvent =
+            viewModel.eventList.getEventWithId(appUiState.activeEventCard.value!!.eventId)
         ModalBottomSheet(onDismissRequest = {
             appUiState.isInEditMode.value = false
             appUiState.activeEventCard.value = null
@@ -107,14 +113,16 @@ fun EditingModalBottomSheet(viewModel: MainViewModel, appUiState: AppUiState) {
             var newName by remember { mutableStateOf("") }
             if (activeEvent.eventTags[0] != "(No title)") {
                 newName = activeEvent.eventTags[0]
+
             }
 
             var newTag by remember { mutableStateOf("") }
 
             Column {
                 Button(onClick = {
-                    viewModel.editEventName(activeEvent.id, newName)
+                    viewModel.eventList.editEventName(activeEvent.id, newName)
                     appUiState.isInEditMode.value = false
+                    viewModel.updateListOfEventCard()
                 }) { Text(text = "Save") }
                 TextField(modifier = Modifier.fillMaxWidth(),
                     value = newName,
@@ -127,12 +135,13 @@ fun EditingModalBottomSheet(viewModel: MainViewModel, appUiState: AppUiState) {
                     ).format(activeEvent.startTime)
                 )
                 LazyVerticalGrid(columns = GridCells.Adaptive(100.dp)) {
-                    items(viewModel.getEventWithId(activeEvent.id).eventGroups) {
+                    items(viewModel.eventList.getEventWithId(activeEvent.id).eventGroups) {
                         Text(text = it)
                     }
                 }
                 Button(onClick = {
-                    viewModel.addTagToEvent(activeEvent.id, newTag)
+                    viewModel.eventList.addTagToEvent(activeEvent.id, newTag)
+                    viewModel.updateListOfEventCard()
                 }) { Text(text = "Add tag") }
                 TextField(modifier = Modifier.fillMaxWidth(),
                     value = newTag,
