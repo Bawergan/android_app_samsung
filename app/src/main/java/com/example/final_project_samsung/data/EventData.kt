@@ -1,28 +1,59 @@
 package com.example.final_project_samsung.data
 
-import java.util.Calendar
-import java.util.Date
+import java.time.LocalDateTime
 
-class EventData(val id: Int) {
-    val eventTags: MutableList<String> = mutableListOf("(No title)")
-    val eventGroups: MutableList<String> = mutableListOf()
-    var startTime: Date = Calendar.getInstance().time
-    var endTime: Date = Calendar.getInstance().time
+data class EventData(
+    val id: Int,
+    val eventTags: MutableList<String> = mutableListOf("(No title)"),
+    var startTime: LocalDateTime = LocalDateTime.now(),
+    var endTime: LocalDateTime = LocalDateTime.now(),
 
     //TODO colors
-    fun onEventStart() {
-    }
+)
 
-    fun onEventEnd() {
-        endTime = Calendar.getInstance().time
-        eventTags.add("ended")
-    }
+val listOfEventData =
+    listOf(
+        EventData(
+            1,
+            mutableListOf("my first title"),
+            LocalDateTime.parse("2024-04-07T15:30"),
+            LocalDateTime.parse("2024-04-07T20:30")
+        ),
+        EventData(
+            2,
+            mutableListOf("my title"),
+            LocalDateTime.parse("2024-04-07T17:30"),
+            LocalDateTime.parse("2024-04-07T20:30")
+        ),
+        EventData(
+            3,
+            mutableListOf("my third title"),
+            LocalDateTime.parse("2024-04-07T18:30"),
+            LocalDateTime.parse("2024-04-07T20:30")
+        ),
+        EventData(
+            4,
+            mutableListOf("title"),
+            LocalDateTime.parse("2024-04-07T18:30"),
+            LocalDateTime.parse("2024-04-07T20:30")
+        ),
+        EventData(
+            5,
+            mutableListOf(""),
+            LocalDateTime.parse("2024-04-07T18:30"),
+            LocalDateTime.parse("2024-04-07T20:30")
+        ),
+        EventData(
+            6,
+            mutableListOf("This is very long title"),
+            LocalDateTime.parse("2024-04-07T18:30"),
+            LocalDateTime.parse("2024-04-07T20:30")
+        ),
+        EventData(
+            7,
+            mutableListOf("final title"),
+            LocalDateTime.parse("2024-04-07T19:30"),
+            LocalDateTime.parse("2024-04-07T20:30")
+        ),
 
-    fun addEventToGroup(group: String) {
-        eventGroups.add(group)
-    }
-
-    fun editEventName(newName: String){
-        eventTags[0] = newName
-    }
-}
+        )

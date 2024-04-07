@@ -6,7 +6,7 @@ import com.example.final_project_samsung.data.GroupData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import java.util.Date
+import java.time.LocalDateTime
 
 class MainViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(AppUiState())
@@ -15,13 +15,12 @@ class MainViewModel : ViewModel() {
     var groupList = GroupList()
     var eventList = EventList()
 
-    private fun newCard(event: EventData, tag: String, time: Date): CardEventData {
+    private fun newCard(event: EventData, tag: String, time: LocalDateTime): CardEventData {
         return CardEventData(
             event.id,
             time,
             tag,
-            event.eventTags[0],
-            event.eventGroups
+            event.eventTags[0]
         )
     }
 
@@ -41,7 +40,6 @@ class MainViewModel : ViewModel() {
     fun addEventToGroup(eventId: Int, groupId: Int) {
         val myEvent = eventList.getEventWithId(eventId)
         val myGroup = groupList.getGroupWithId(groupId)
-        myGroup.eventsInGroupIds.add(myEvent.id)
     }
 }
 
@@ -61,12 +59,12 @@ class EventList {
     fun endEvent(id: Int) {
         val event = getEventWithId(id)
         if ("ended" !in event.eventTags) {
-            event.onEventEnd()
+//            event.onEventEnd()
         }
     }
 
     fun editEventName(id: Int, newName: String) {
-        getEventWithId(id).editEventName(newName)
+//        getEventWithId(id).editEventName(newName)
     }
 
     fun deleteEvent(id: Int) {
@@ -74,12 +72,12 @@ class EventList {
     }
 
     fun addEventToList(newEvent: EventData) {
-        newEvent.onEventStart()
+//        newEvent.onEventStart()
         eventList.add(newEvent)
     }
 
     fun addTagToEvent(id: Int, newTag: String) {
-        getEventWithId(id).addEventToGroup(newTag)
+//        getEventWithId(id).addEventToGroup(newTag)
     }
 
     private var counter = 0

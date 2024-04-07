@@ -2,7 +2,7 @@ package com.example.final_project_samsung.ui
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import java.util.Date
+import java.time.LocalDateTime
 
 class AppUiState {
     var activeEventCard = mutableStateOf<CardEventData?>(null)
@@ -10,4 +10,9 @@ class AppUiState {
     var isInEditMode = mutableStateOf(false )
 }
 
-data class CardEventData(val eventId: Int, val time: Date, val tag: String, val name: String, val cardEventGroup: List<String>)
+data class CardEventData(
+    val eventId: Int,
+    val time: LocalDateTime,
+    val tag: String,
+    val name: String
+)
