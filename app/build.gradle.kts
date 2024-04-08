@@ -51,7 +51,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.compose.ui:ui-tooling-preview-desktop:1.6.4")
+    implementation("androidx.compose.ui:ui-tooling-preview-desktop:1.6.5")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("androidx.room:room-ktx:2.6.1")
     implementation("com.google.android.gms:play-services-basement:18.3.0")
