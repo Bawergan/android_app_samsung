@@ -30,6 +30,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,6 +57,7 @@ import java.util.Locale
 @Composable
 fun TheApp(viewModel: MainViewModel = viewModel()) {
     var i = 0
+
     listOfEventData.forEach {
         it.groupsForEvent.add(listOfGroupData[i])
         i++
@@ -88,15 +90,18 @@ fun MainUIScreenLayout(viewModel: MainViewModel, appUiState: AppUiState) {
 @Preview(name = "preview")
 @Composable
 fun TryNewLayoutPreview() {
-    DailyLayout()
+    DailyLayout(Modifier, listOfEventData, listOfGroupData)
 }
 
 @Composable
 fun DailyLayout(
     modifier: Modifier = Modifier,
-    eventDataList: List<EventData> = listOfEventData,
-    groupList: List<GroupData> = listOfGroupData,
+    eventDataList: List<EventData>,
+    groupList: List<GroupData>,
 ) {
+    val groupChosen = remember { mutableStateOf<GroupData?>(null) }
+    val eventChosen = remember { mutableStateOf<EventData?>(null) }
+
     val masterVerticalScrollState = rememberScrollState()
     val masterHorizontalScrollState = rememberScrollState()
 
@@ -116,6 +121,12 @@ fun DailyLayout(
             LocalDateTime.parse("2024-04-07T15:30").year,
             LocalDateTime.parse("2024-04-07T15:30").dayOfYear
         )
+        CanvasForDay(
+            gridHeight, gridWidth, Modifier
+                .horizontalScroll(masterHorizontalScrollState)
+                .width(gridWidth * groupList.size + timeBarWidth)
+                .padding(start = timeBarWidth), groupList
+        )
         LayoutForDay(
             date,
             dayHeight,
@@ -124,20 +135,18 @@ fun DailyLayout(
             Modifier
                 .horizontalScroll(masterHorizontalScrollState)
                 .width(gridWidth * groupList.size + timeBarWidth)
-                .padding(start = timeBarWidth),
+                .padding(start = timeBarWidth, top = groupBarHeight),
             eventDataList,
-            groupList
+            eventChosen
         )
-        Row {
-            Box(Modifier.width(timeBarWidth)) {
-                repeat(24) {
-                    Text(
-                        text = it.toString(),
-                        Modifier
-                            .padding(top = it * gridHeight)
-                            .fillMaxWidth()
-                    )
-                }
+        Column(Modifier.width(timeBarWidth)) {
+            repeat(24) {
+                Text(
+                    text = it.toString(),
+                    Modifier
+                        .fillMaxWidth()
+                        .height(gridHeight)
+                )
             }
         }
         val lineHeight = 2.dp
@@ -164,13 +173,19 @@ fun DailyLayout(
                 Modifier
                     .height(groupBarHeight)
                     .width(gridWidth)
+                    .clickable { groupChosen.value = group }
             )
         }
     }
 }
 
 @Composable
-fun CanvasForDay(gridHeight: Dp, gridWidth: Dp, modifier: Modifier, groupList: List<GroupData>) {
+fun CanvasForDay(
+    gridHeight: Dp,
+    gridWidth: Dp,
+    modifier: Modifier = Modifier,
+    groupList: List<GroupData>
+) {
     Canvas(modifier = modifier.fillMaxSize()) {
         repeat(25) {
             val x = groupList.size * gridWidth.toPx()
@@ -193,11 +208,11 @@ fun LayoutForDay(
     gridHeight: Dp,
     modifier: Modifier = Modifier,
     eventDataList: List<EventData>,
-    groupList: List<GroupData>
+    eventChosen: MutableState<EventData?>
 ) {
-    CanvasForDay(gridHeight, gridWidth, modifier, groupList)
     Layout(
-        content = { GetContentForDay(yearAndDay, gridHeight, eventDataList) }, modifier
+        content = { GetContentForDay(yearAndDay, gridHeight, eventDataList, eventChosen) },
+        modifier = modifier
     ) { measurables, constraints ->
         val itemConstraints =
             constraints.copy(maxWidth = gridWidth.roundToPx(), minWidth = gridWidth.roundToPx())
@@ -210,11 +225,10 @@ fun LayoutForDay(
             var index = 0
             placeables.forEach { placeable ->
                 val eventData = listOfEventDataInDay[index]
-                val y = eventData.event.startTime.hour * gridHeight
+                val y =
+                    (eventData.event.startTime.hour + eventData.event.startTime.minute / 60f) * gridHeight
                 val x = eventData.group.positionInView * gridWidth
-
-                placeable.place(x.roundToPx(), y.roundToPx())
-
+                placeable.placeRelative(x.roundToPx(), y.roundToPx())
                 index++
             }
         }
@@ -226,20 +240,33 @@ val listOfEventDataInDay = mutableListOf<EventDataToPlace>()
 data class EventDataToPlace(val event: EventData, val group: GroupData)
 
 @Composable
-fun GetContentForDay(yearAndDay: YearAndDay, gridHeight: Dp, eventDataList: List<EventData>) {
+fun GetContentForDay(
+    yearAndDay: YearAndDay,
+    gridHeight: Dp,
+    eventDataList: List<EventData>,
+    eventChosen: MutableState<EventData?>
+) {
     eventDataList.forEach { event ->
         event.groupsForEvent.forEach { group ->
             if (event.startTime.year == yearAndDay.year && event.startTime.dayOfYear == yearAndDay.day) {
                 listOfEventDataInDay.add(EventDataToPlace(event, group))
-                val eventHeight = (event.endTime.hour - event.startTime.hour) * gridHeight
-                Card(modifier = Modifier
-                    .height(eventHeight)
-                    .clickable { }) {
-                    Text(text = event.eventTags[0])
-                    Text(text = event.startTime.hour.toString())
-                }
+                EventCardBuilder(event, gridHeight, eventChosen)
+
             }
         }
+    }
+}
+
+@Composable
+fun EventCardBuilder(event: EventData, gridHeight: Dp, eventChosen: MutableState<EventData?>) {
+    val eventHeight = (event.endTime.hour - event.startTime.hour) * gridHeight
+
+    Card(modifier = Modifier
+        .height(eventHeight)
+        .clickable { eventChosen.value = event }) {
+        Text(text = event.eventTags[0])
+        Text(text = event.startTime.toLocalTime().toString())
+        Text(text = event.endTime.toLocalTime().toString())
     }
 }
 
@@ -250,8 +277,7 @@ fun getListOfDays(now: LocalDateTime): List<YearAndDay> {
     for (i in -20..20) {
         listOfYearAndDay.add(
             YearAndDay(
-                now.plusDays(i.toLong()).year,
-                now.plusDays(i.toLong()).dayOfYear
+                now.plusDays(i.toLong()).year, now.plusDays(i.toLong()).dayOfYear
             )
         )
     }
