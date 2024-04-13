@@ -24,7 +24,7 @@ class GroupsViewModel : ViewModel() {
         )
     }
 
-    fun updateListOfEventCard() {
+    fun updateLazyLayout() {
 //        if (_uiState.value.eventCardList.size != 0) {
 //            _uiState.value.eventCardList.removeRange(0, _uiState.value.eventCardList.size)
 //        }
@@ -91,13 +91,17 @@ class EventList {
         return counter++
     }
 
-    fun getNewEventData(newName: String): EventData {
+    fun getNewEventData(
+        newName: String,
+        startTime: LocalDateTime = LocalDateTime.now(),
+        endTime: LocalDateTime = LocalDateTime.now().plusHours(1)
+    ): EventData {
         return EventData(
             getNewId(),
             mutableListOf(newName),
-            LocalDateTime.now(),
-            LocalDateTime.now().plusHours(1),
-            mutableListOf(GroupData(1))
+            startTime,
+            endTime,
+            mutableListOf(GroupData(0))
         )
     }
 }

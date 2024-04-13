@@ -26,21 +26,15 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -52,6 +46,7 @@ import androidx.compose.ui.unit.times
 import com.example.final_project_samsung.R
 import com.example.final_project_samsung.data.EventData
 import com.example.final_project_samsung.data.GroupData
+import com.example.final_project_samsung.utils.timeFormatter
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
@@ -67,19 +62,19 @@ fun GroupsScreen(viewModel: GroupsViewModel, groupsUiState: GroupsUiState, openD
         }) {
         Box(modifier = Modifier.padding(it)) {
             DailyLayout(
-                eventDataList = groupsUiState.eventList,
-                groupList = groupsUiState.groupList, groupsUiState = groupsUiState
+                eventList = groupsUiState.eventList,
+                groupList = groupsUiState.groupList,
+                groupsUiState = groupsUiState
             )
         }
-        GroupEditingBottomSheet(groupsUiState = groupsUiState, viewModel = viewModel)
-        EventEditingBottomSheet(groupsUiState = groupsUiState, viewModel = viewModel)
+        EditingBottomSheetManager(groupsUiState = groupsUiState, viewModel = viewModel)
     }
 }
 
 @Composable
 fun DailyLayout(
     modifier: Modifier = Modifier,
-    eventDataList: List<EventData>,
+    eventList: List<EventData>,
     groupList: List<GroupData>,
     groupsUiState: GroupsUiState,
 ) {
@@ -129,7 +124,7 @@ fun DailyLayout(
                     Modifier
                         .width(gridWidth * groupList.size + timeBarWidth)
                         .padding(start = timeBarWidth, top = groupBarHeight),
-                    eventDataList,
+                    eventList,
                     groupsUiState
                 )
 
@@ -183,15 +178,17 @@ fun DailyLayout(
 fun CanvasForDay(
     gridHeight: Dp, gridWidth: Dp, modifier: Modifier = Modifier, groupList: List<GroupData>
 ) {
+    val color = MaterialTheme.colorScheme.outlineVariant
+
     Canvas(modifier = modifier.fillMaxSize()) {
         repeat(24) {
             val x = groupList.size * gridWidth.toPx()
             val y = it * gridHeight.toPx()
-            drawLine(Color.LightGray, Offset(0f, y), Offset(x, y), 2f)
+            drawLine(color, Offset(0f, y), Offset(x, y), 2f)
         }
-        repeat(groupList.size) {
+        repeat(groupList.size + 1) {
             val x = (gridWidth * it).roundToPx().toFloat()
-            drawLine(Color.LightGray, Offset(x, 0f), Offset(x, 25 * gridHeight.toPx()), 2f)
+            drawLine(color, Offset(x, 0f), Offset(x, 25 * gridHeight.toPx()), 2f)
         }
     }
 }
@@ -204,11 +201,11 @@ fun LayoutForDay(
     gridWidth: Dp,
     gridHeight: Dp,
     modifier: Modifier = Modifier,
-    eventDataList: List<EventData>,
+    eventList: List<EventData>,
     groupsUiState: GroupsUiState
 ) {
     Layout(
-        content = { GetContentForDay(yearAndDay, gridHeight, eventDataList, groupsUiState) },
+        content = { GetContentForDay(yearAndDay, gridHeight, eventList, groupsUiState) },
         modifier = modifier
     ) { measurables, constraints ->
         val itemConstraints =
@@ -260,10 +257,14 @@ fun EventCardBuilder(event: EventData, gridHeight: Dp, groupsUiState: GroupsUiSt
 
     Card(modifier = Modifier
         .height(eventHeight)
-        .clickable { groupsUiState.chosenEvent.value = index }) {
+        .clickable {
+            groupsUiState.chosenEvent.value = index
+            groupsUiState.isEventEditingBottomSheetOpen.value = true
+        }) {
+        val startTime = event.startTime.toLocalTime().format(timeFormatter)
+        val endTime = event.endTime.toLocalTime().format(timeFormatter)
         Text(text = event.eventTags[0])
-        Text(text = event.startTime.toLocalTime().toString())
-        Text(text = event.endTime.toLocalTime().toString())
+        Text(text = "$startTime - $endTime")
     }
 }
 
@@ -312,114 +313,6 @@ fun FloatingActionButtonManager(groupsUiState: GroupsUiState) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GroupEditingBottomSheet(
-    groupsUiState: GroupsUiState, viewModel: GroupsViewModel
-) {
-    if (groupsUiState.isGroupEditingBottomSheetOpen.value) {
-        ModalBottomSheet(onDismissRequest = {
-            groupsUiState.isGroupEditingBottomSheetOpen.value = false
-            groupsUiState.chosenGroup.value = null
-        }) {
-
-            val group = if (groupsUiState.chosenGroup.value != null) {
-                groupsUiState.groupList[groupsUiState.chosenGroup.value!!]
-            } else {
-                null
-            }
-
-
-            val res = stringResource(R.string.no_name_group_default)
-            var newName by remember { mutableStateOf(group?.groupTags?.get(0) ?: "") }
-            if (newName == res) {
-                newName = ""
-            }
-
-            Column {
-                Button(onClick = {
-                    if (newName == "") {
-                        newName = res
-                    }
-                    if (group == null) {
-                        groupsUiState.groupList.add(viewModel.groupList.getNewGroupData(newName))
-                    } else {
-//                        group.groupTags[0] = newName
-                        groupsUiState.groupList[groupsUiState.chosenGroup.value!!].groupTags[0] =
-                            newName
-                    }
-                    groupsUiState.chosenGroup.value = null
-                    groupsUiState.isGroupEditingBottomSheetOpen.value = false
-                    viewModel.updateListOfEventCard()
-                }) { Text(text = "Save") }
-
-                TextField(
-                    value = newName,
-                    onValueChange = { newName = it },
-                    placeholder = {
-                        Text(text = "Add title")
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun EventEditingBottomSheet(
-    groupsUiState: GroupsUiState, viewModel: GroupsViewModel
-) {
-    if (groupsUiState.isEventEditingBottomSheetOpen.value) {
-        ModalBottomSheet(onDismissRequest = {
-            groupsUiState.isEventEditingBottomSheetOpen.value = false
-            groupsUiState.chosenEvent.value = null
-        }) {
-
-            val event = if (groupsUiState.chosenEvent.value != null) {
-                groupsUiState.eventList[groupsUiState.chosenEvent.value!!]
-            } else {
-                null
-            }
-
-
-            val res = stringResource(R.string.no_name_event_default)
-            var newName by remember { mutableStateOf(event?.eventTags?.get(0) ?: "") }
-            if (newName == res) {
-                newName = ""
-            }
-
-            Column {
-                Button(onClick = {
-                    if (newName == "") {
-                        newName = res
-                    }
-                    if (event == null) {
-                        groupsUiState.eventList.add(viewModel.eventList.getNewEventData(newName))
-                    } else {
-//                        group.groupTags[0] = newName
-                        groupsUiState.eventList[groupsUiState.chosenEvent.value!!].eventTags[0] =
-                            newName
-                    }
-                    groupsUiState.chosenEvent.value = null
-                    groupsUiState.isEventEditingBottomSheetOpen.value = false
-                    viewModel.updateListOfEventCard()
-                }) { Text(text = "Save") }
-
-                TextField(
-                    value = newName,
-                    onValueChange = { newName = it },
-                    placeholder = {
-                        Text(text = "Add title")
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
 private fun GroupsTopAppBar(
     openDrawer: () -> Unit,
     modifier: Modifier = Modifier,
@@ -427,7 +320,6 @@ private fun GroupsTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior? =
         TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
 ) {
-//    val context = LocalContext.current
     TopAppBar(
         title = {
             Text(text = stringResource(id = R.string.group_view_title))

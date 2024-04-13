@@ -2,4 +2,7 @@
 <resources>
     <string name="no_name_event_default">Новый эвент</string>
     <string name="no_name_group_default">Новая группа</string>
+    <string name="group_view_title">Группы</string>
+    <string name="week_view_title">Недели</string>
+    <string name="cd_open_navigation_drawer">открыть панель навигации</string>
 </resources>
