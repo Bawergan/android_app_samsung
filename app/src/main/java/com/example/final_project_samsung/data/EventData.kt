@@ -25,4 +25,16 @@ val listOfEventData: List<EventData> = listOf(
         LocalDateTime.parse("2024-04-07T15:30"),
         LocalDateTime.parse("2024-04-07T20:30")
     ),
+    EventData(
+        3,
+        mutableListOf("my first title"),
+        LocalDateTime.parse("2024-04-08T15:30"),
+        LocalDateTime.parse("2024-04-08T20:30")
+    ),
+    EventData(
+        4,
+        mutableListOf("my first title"),
+        LocalDateTime.parse("2024-04-07T21:30"),
+        LocalDateTime.parse("2024-04-08T02:30")
+    ),
 )

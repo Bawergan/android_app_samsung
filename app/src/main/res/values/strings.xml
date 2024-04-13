@@ -2,4 +2,7 @@
     <string name="app_name" translatable="false">Final_project_samsung</string>
     <string name="no_name_event_default">New event</string>
     <string name="no_name_group_default">New group</string>
+    <string name="group_view_title">Groups</string>
+    <string name="week_view_title">Weeks\n</string>
+    <string name="cd_open_navigation_drawer">open navigation drawer</string>
 </resources>

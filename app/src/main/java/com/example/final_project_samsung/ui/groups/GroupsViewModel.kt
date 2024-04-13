@@ -1,4 +1,4 @@
-package com.example.final_project_samsung.ui
+package com.example.final_project_samsung.ui.groups
 
 import androidx.lifecycle.ViewModel
 import com.example.final_project_samsung.data.EventData
@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDateTime
 
-class MainViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(AppUiState())
-    val uiState: StateFlow<AppUiState> = _uiState.asStateFlow()
+class GroupsViewModel : ViewModel() {
+    private val _uiState = MutableStateFlow(GroupsUiState())
+    val uiState: StateFlow<GroupsUiState> = _uiState.asStateFlow()
 
     var groupList = GroupList()
     var eventList = EventList()
@@ -25,16 +25,22 @@ class MainViewModel : ViewModel() {
     }
 
     fun updateListOfEventCard() {
-        if (_uiState.value.eventCardList.size != 0) {
-            _uiState.value.eventCardList.removeRange(0, _uiState.value.eventCardList.size)
-        }
-        for (event in eventList.eventList) {
-            _uiState.value.eventCardList.add(newCard(event, "started", event.startTime))
-            if ("ended" in event.eventTags) {
-                _uiState.value.eventCardList.add(newCard(event, "ended", event.endTime))
-            }
-        }
-        _uiState.value.eventCardList.sortBy { it.time }
+//        if (_uiState.value.eventCardList.size != 0) {
+//            _uiState.value.eventCardList.removeRange(0, _uiState.value.eventCardList.size)
+//        }
+//        for (event in eventList.eventList) {
+//            _uiState.value.eventCardList.add(newCard(event, "started", event.startTime))
+//            if ("ended" in event.eventTags) {
+//                _uiState.value.eventCardList.add(newCard(event, "ended", event.endTime))
+//            }
+//        }
+//        _uiState.value.eventCardList.sortBy { it.time }
+        _uiState.value.groupList.add(GroupData(999999))
+        _uiState.value.groupList.removeLast()
+
+        _uiState.value.eventList.add(EventData(999999))
+        _uiState.value.eventList.removeLast()
+
     }
 
     fun addEventToGroup(eventId: Int, groupId: Int) {
@@ -84,6 +90,16 @@ class EventList {
     fun getNewId(): Int {
         return counter++
     }
+
+    fun getNewEventData(newName: String): EventData {
+        return EventData(
+            getNewId(),
+            mutableListOf(newName),
+            LocalDateTime.now(),
+            LocalDateTime.now().plusHours(1),
+            mutableListOf(GroupData(1))
+        )
+    }
 }
 
 class GroupList {
@@ -106,5 +122,9 @@ class GroupList {
             }
         }
         return myGroup
+    }
+
+    fun getNewGroupData(newName: String): GroupData {
+        return GroupData(getNewId(), groupTags = mutableListOf(newName))
     }
 }

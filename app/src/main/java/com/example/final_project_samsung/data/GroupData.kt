@@ -4,7 +4,7 @@ data class GroupData(
     val id: Int,
 //    val eventsInGroup: MutableList<EventData> = mutableListOf(),
     val groupTags: MutableList<String> = mutableListOf(""),
-    val positionInView: Int = id - 1
+    val positionInView: Int = id
 )
 
 val listOfGroupData = listOf(
