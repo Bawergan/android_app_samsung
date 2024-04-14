@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,36 +21,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.final_project_samsung.R
-import com.example.final_project_samsung.data.EventData
-import com.example.final_project_samsung.data.GroupData
+import com.example.final_project_samsung.data.listOfEventData
+import com.example.final_project_samsung.data.listOfGroupData
 import com.example.final_project_samsung.utils.CustomDatePickerDialog
 import com.example.final_project_samsung.utils.CustomTimePickerDialog
 import com.example.final_project_samsung.utils.add
 import com.example.final_project_samsung.utils.timeFormatter
 import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalTime
 import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditingBottomSheetManager(groupsUiState: GroupsUiState, viewModel: GroupsViewModel) {
-
-    fun groupFinale() {
-        groupsUiState.chosenGroup.value = null
-        groupsUiState.isGroupEditingBottomSheetOpen.value = false
-        //skill issue
-        groupsUiState.groupList.add(GroupData(999999))
-        groupsUiState.groupList.removeLast()
-    }
-
-    fun eventFinale() {
-        groupsUiState.chosenEvent.value = null
-        groupsUiState.isEventEditingBottomSheetOpen.value = false
-        //skill issue
-        groupsUiState.eventList.add(EventData(999999))
-        groupsUiState.eventList.removeLast()
-    }
+fun EditingBottomSheetManager(
+    groupsUiState: GroupsUiState,
+    groupsViewModel: GroupsViewModel,
+) {
 
     val groupNoNameName = stringResource(R.string.no_name_group_default)
     val eventNoNameName = stringResource(R.string.no_name_event_default)
@@ -63,10 +49,10 @@ fun EditingBottomSheetManager(groupsUiState: GroupsUiState, viewModel: GroupsVie
             val group = if (groupsUiState.chosenGroup.value != null) {
                 groupsUiState.groupList[groupsUiState.chosenGroup.value!!]
             } else {
-                null
+                groupsViewModel.groupList.getNewGroupData(groupNoNameName)
             }
 
-            var newName by remember { mutableStateOf(group?.groupTags?.get(0) ?: "") }
+            var newName by remember { mutableStateOf("") }
             if (newName == groupNoNameName) {
                 newName = ""
             }
@@ -76,26 +62,32 @@ fun EditingBottomSheetManager(groupsUiState: GroupsUiState, viewModel: GroupsVie
                     if (newName == "") {
                         newName = groupNoNameName
                     }
-                    if (group == null) {
-                        groupsUiState.groupList.add(viewModel.groupList.getNewGroupData(newName))
-                    } else {
-                        group.groupTags[0] = newName
-                    }
-                    groupFinale()
+
+                    group.groupTags[0] = newName
+
+                    groupsUiState.groupList.add(group)
+                    listOfGroupData.add(group)
+
+                    groupsUiState.chosenGroup.value = null
+                    groupsUiState.isGroupEditingBottomSheetOpen.value = false
+                    //skill issue
+//                    groupsUiState.groupList.add(GroupData(999999))
+//                    groupsUiState.groupList.removeLast()
+
                 }) { Text(text = "Save") }
 
-                TextField(
-                    value = newName,
-                    onValueChange = { newName = it },
-                    placeholder = {
-                        Text(text = "Add title")
-                    },
-                    modifier = Modifier.fillMaxWidth()
+                TextField(value = newName, onValueChange = { newName = it }, placeholder = {
+                    Text(text = "Add title")
+                }, modifier = Modifier.fillMaxWidth()
                 )
-                if (group != null) {
+
+                if (groupsUiState.chosenGroup.value != null) {
                     Button(onClick = {
                         groupsUiState.groupList.remove(group)
-                        groupFinale()
+                        listOfGroupData.remove(group)
+
+                        groupsUiState.chosenGroup.value = null
+                        groupsUiState.isGroupEditingBottomSheetOpen.value = false
                     }) {
                         Text(text = "Delete")
                     }
@@ -108,90 +100,71 @@ fun EditingBottomSheetManager(groupsUiState: GroupsUiState, viewModel: GroupsVie
         ModalBottomSheet(onDismissRequest = {
             groupsUiState.isEventEditingBottomSheetOpen.value = false
             groupsUiState.chosenEvent.value = null
-        }) {
+        }, Modifier.navigationBarsPadding()) {
 
             val event = if (groupsUiState.chosenEvent.value != null) {
                 groupsUiState.eventList[groupsUiState.chosenEvent.value!!]
             } else {
-                null
+                groupsViewModel.eventList.getNewEventData(eventNoNameName)
             }
 
-            var newName by remember { mutableStateOf(event?.eventTags?.get(0) ?: "") }
+            var newName by remember { mutableStateOf("") }
             if (newName == eventNoNameName) {
                 newName = ""
             }
 
-            val newStartTime =
-                remember { mutableStateOf(event?.startTime?.toLocalTime() ?: LocalTime.now()) }
-            val newStartDate =
-                remember { mutableStateOf(event?.startTime?.toLocalDate() ?: LocalDate.now()) }
+            val newStartTime = remember { mutableStateOf(event.startTime.toLocalTime()) }
+            val newStartDate = remember { mutableStateOf(event.startTime.toLocalDate()) }
 
-            val newEndTime =
-                remember { mutableStateOf(event?.endTime?.toLocalTime() ?: LocalTime.now()) }
-            val newEndDate =
-                remember { mutableStateOf(event?.endTime?.toLocalDate() ?: LocalDate.now()) }
+            val newEndTime = remember { mutableStateOf(event.endTime.toLocalTime()) }
+            val newEndDate = remember { mutableStateOf(event.endTime.toLocalDate()) }
 
             Column {
                 Button(onClick = {
                     if (newName == "") {
                         newName = eventNoNameName
                     }
-                    if (event == null) {
-                        if (groupsUiState.groupList.size == 0) {
-                            groupsUiState.groupList.add(
-                                viewModel.groupList.getNewGroupData(groupNoNameName)
-                            )
-                        }
-                        groupsUiState.eventList.add(
-                            viewModel.eventList.getNewEventData(
-                                newName,
-                                newStartDate.value.add(newStartTime.value),
-                                newEndDate.value.add(newEndTime.value)
-                            )
-                        )
-                    } else {
-                        event.eventTags[0] = newName
-                        event.startTime = newStartDate.value.add(newStartTime.value)
-                        event.endTime = newEndDate.value.add(newEndTime.value)
+                    if (groupsUiState.groupList.size == 0) {
+                        val newGroup = groupsViewModel.groupList.getNewGroupData(groupNoNameName)
+                        groupsUiState.groupList.add(newGroup)
+                        listOfGroupData.add(newGroup)
                     }
-                    eventFinale()
+                    event.eventTags[0] = newName
+                    event.startTime = newStartDate.value.add(newStartTime.value)
+                    event.endTime = newEndDate.value.add(newEndTime.value)
+
+                    groupsUiState.chosenEvent.value = null
+                    groupsUiState.isEventEditingBottomSheetOpen.value = false
+
+                    listOfEventData.add(event)
+                    groupsUiState.eventList.add(event)
                 }) { Text(text = "Save") }
 
-                TextField(
-                    value = newName,
-                    onValueChange = { newName = it },
-                    placeholder = {
-                        Text(text = "Add title")
-                    },
-                    modifier = Modifier.fillMaxWidth()
+                TextField(value = newName, onValueChange = { newName = it }, placeholder = {
+                    Text(text = "Add title")
+                }, modifier = Modifier.fillMaxWidth()
                 )
 
                 val showStartTimePickerDialog = remember { mutableStateOf(false) }
                 val showStartDatePickerDialog = remember { mutableStateOf(false) }
 
                 if (showStartTimePickerDialog.value) {
-                    CustomTimePickerDialog(
-                        onAccept = {
-                            showStartTimePickerDialog.value = false
-                            newStartTime.value = it
-                        },
-                        onCancel = { showStartTimePickerDialog.value = false }
-                    )
+                    CustomTimePickerDialog(onAccept = {
+                        showStartTimePickerDialog.value = false
+                        newStartTime.value = it
+                    }, onCancel = { showStartTimePickerDialog.value = false })
                 }
 
                 if (showStartDatePickerDialog.value) {
                     CustomDatePickerDialog(onAccept = {
                         showStartDatePickerDialog.value = false
                         if (it != null) { // Set the date
-                            newStartDate.value = Instant
-                                .ofEpochMilli(it)
-                                .atZone(ZoneId.of("UTC"))
-                                .toLocalDate()
+                            newStartDate.value =
+                                Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC")).toLocalDate()
                         }
-                    },
-                        onCancel = {
-                            showStartDatePickerDialog.value = false //close dialog
-                        })
+                    }, onCancel = {
+                        showStartDatePickerDialog.value = false //close dialog
+                    })
                 }
 
                 Row {
@@ -208,28 +181,22 @@ fun EditingBottomSheetManager(groupsUiState: GroupsUiState, viewModel: GroupsVie
                 val showEndDatePickerDialog = remember { mutableStateOf(false) }
 
                 if (showEndTimePickerDialog.value) {
-                    CustomTimePickerDialog(
-                        onAccept = {
-                            showEndTimePickerDialog.value = false
-                            newEndTime.value = it
-                        },
-                        onCancel = { showEndTimePickerDialog.value = false }
-                    )
+                    CustomTimePickerDialog(onAccept = {
+                        showEndTimePickerDialog.value = false
+                        newEndTime.value = it
+                    }, onCancel = { showEndTimePickerDialog.value = false })
                 }
 
                 if (showEndDatePickerDialog.value) {
                     CustomDatePickerDialog(onAccept = {
                         showEndDatePickerDialog.value = false
                         if (it != null) { // Set the date
-                            newEndDate.value = Instant
-                                .ofEpochMilli(it)
-                                .atZone(ZoneId.of("UTC"))
-                                .toLocalDate()
+                            newEndDate.value =
+                                Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC")).toLocalDate()
                         }
-                    },
-                        onCancel = {
-                            showEndDatePickerDialog.value = false //close dialog
-                        })
+                    }, onCancel = {
+                        showEndDatePickerDialog.value = false //close dialog
+                    })
                 }
 
                 Row {
@@ -242,11 +209,13 @@ fun EditingBottomSheetManager(groupsUiState: GroupsUiState, viewModel: GroupsVie
                         Modifier.clickable { showEndTimePickerDialog.value = true })
                 }
 
-
-                if (event != null) {
+                if (groupsUiState.chosenEvent.value != null) {
                     Button(onClick = {
+                        groupsUiState.chosenEvent.value = null
+                        groupsUiState.isEventEditingBottomSheetOpen.value = false
+
+                        listOfEventData.remove(event)
                         groupsUiState.eventList.remove(event)
-                        eventFinale()
                     }) {
                         Text(text = "Delete")
                     }

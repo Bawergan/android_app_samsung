@@ -35,6 +35,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -46,6 +47,7 @@ import androidx.compose.ui.unit.times
 import com.example.final_project_samsung.R
 import com.example.final_project_samsung.data.EventData
 import com.example.final_project_samsung.data.GroupData
+import com.example.final_project_samsung.data.listOfEventData
 import com.example.final_project_samsung.utils.timeFormatter
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -53,7 +55,12 @@ import java.time.ZoneOffset
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GroupsScreen(viewModel: GroupsViewModel, groupsUiState: GroupsUiState, openDrawer: () -> Unit) {
+fun GroupsScreen(
+    groupViewModel: GroupsViewModel,
+    groupsUiState: GroupsUiState,
+    openDrawer: () -> Unit
+) {
+    groupsUiState.eventList = listOfEventData.toMutableStateList()
     val topAppBarState = rememberTopAppBarState()
     Scaffold(
         topBar = { GroupsTopAppBar(openDrawer = openDrawer, topAppBarState = topAppBarState) },
@@ -67,7 +74,7 @@ fun GroupsScreen(viewModel: GroupsViewModel, groupsUiState: GroupsUiState, openD
                 groupsUiState = groupsUiState
             )
         }
-        EditingBottomSheetManager(groupsUiState = groupsUiState, viewModel = viewModel)
+        EditingBottomSheetManager(groupsUiState = groupsUiState, groupsViewModel = groupViewModel)
     }
 }
 

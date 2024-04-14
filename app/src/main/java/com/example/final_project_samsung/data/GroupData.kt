@@ -7,7 +7,9 @@ data class GroupData(
     val positionInView: Int = id
 )
 
-val listOfGroupData = listOf(
+val listOfGroupData: MutableList<GroupData> = mutableListOf()
+
+val demoListOfGroupData = listOf(
     GroupData(
         1,
         mutableListOf("group 1")

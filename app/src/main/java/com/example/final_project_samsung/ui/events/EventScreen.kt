@@ -19,23 +19,30 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.final_project_samsung.R
 import com.example.final_project_samsung.data.EventData
+import com.example.final_project_samsung.data.listOfEventData
 import com.example.final_project_samsung.utils.timeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventsScreen(eventsViewModel: EventsViewModel, uiState: Any, openDrawer: () -> Unit) {
+fun EventsScreen(
+    eventsViewModel: EventsViewModel,
+    eventsUiState: EventsUiState,
+    openDrawer: () -> Unit
+) {
+    eventsUiState.eventList = listOfEventData.toMutableStateList()
     val topAppBarState = rememberTopAppBarState()
     Scaffold(
         topBar = { EventsTopAppBar(openDrawer = openDrawer, topAppBarState = topAppBarState) },
     ) {
         Box(modifier = Modifier.padding(it)) {
             LazyColumn {
-                items(eventsViewModel.listOfEvents) {
-                    MakeCard(it)
+                items(eventsUiState.eventList) { eventData ->
+                    MakeCard(eventData)
                 }
             }
         }

@@ -12,7 +12,9 @@ data class EventData(
     //TODO colors
 )
 
-val listOfEventData: List<EventData> = listOf(
+val listOfEventData: MutableList<EventData> = mutableListOf()
+
+val demoListOfEventData: List<EventData> = listOf(
     EventData(
         1,
         mutableListOf("my first title"),

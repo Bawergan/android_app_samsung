@@ -62,7 +62,7 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    val composeBom = platform("androidx.compose:compose-bom:2024.03.00")
+    val composeBom = platform("androidx.compose:compose-bom:2024.04.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")

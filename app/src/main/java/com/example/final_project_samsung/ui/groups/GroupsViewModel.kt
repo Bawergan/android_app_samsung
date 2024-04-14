@@ -3,6 +3,7 @@ package com.example.final_project_samsung.ui.groups
 import androidx.lifecycle.ViewModel
 import com.example.final_project_samsung.data.EventData
 import com.example.final_project_samsung.data.GroupData
+import com.example.final_project_samsung.data.listOfEventData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -43,9 +44,8 @@ class GroupsViewModel : ViewModel() {
 
     }
 
-    fun addEventToGroup(eventId: Int, groupId: Int) {
-        val myEvent = eventList.getEventWithId(eventId)
-        val myGroup = groupList.getGroupWithId(groupId)
+    fun passeToListOfEventData(eventData: EventData) {
+        listOfEventData.add(eventData)
     }
 }
 
@@ -62,45 +62,17 @@ class EventList {
         return myEvent
     }
 
-    fun endEvent(id: Int) {
-        val event = getEventWithId(id)
-        if ("ended" !in event.eventTags) {
-//            event.onEventEnd()
-        }
-    }
-
-    fun editEventName(id: Int, newName: String) {
-//        getEventWithId(id).editEventName(newName)
-    }
-
-    fun deleteEvent(id: Int) {
-        eventList.remove(getEventWithId(id))
-    }
-
-    fun addEventToList(newEvent: EventData) {
-//        newEvent.onEventStart()
-        eventList.add(newEvent)
-    }
-
-    fun addTagToEvent(id: Int, newTag: String) {
-//        getEventWithId(id).addEventToGroup(newTag)
-    }
-
     private var counter = 0
     fun getNewId(): Int {
         return counter++
     }
 
-    fun getNewEventData(
-        newName: String,
-        startTime: LocalDateTime = LocalDateTime.now(),
-        endTime: LocalDateTime = LocalDateTime.now().plusHours(1)
-    ): EventData {
+    fun getNewEventData(eventNoNameName: String): EventData {
         return EventData(
             getNewId(),
-            mutableListOf(newName),
-            startTime,
-            endTime,
+            mutableListOf(eventNoNameName),
+            LocalDateTime.now(),
+            LocalDateTime.now().plusHours(1),
             mutableListOf(GroupData(0))
         )
     }
