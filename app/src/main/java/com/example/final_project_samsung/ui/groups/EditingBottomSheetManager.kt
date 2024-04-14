@@ -49,7 +49,7 @@ fun EditingBottomSheetManager(
             val group = if (groupsUiState.chosenGroup.value != null) {
                 groupsUiState.groupList[groupsUiState.chosenGroup.value!!]
             } else {
-                groupsViewModel.groupList.getNewGroupData(groupNoNameName)
+                groupsViewModel.getNewGroupData(groupNoNameName)
             }
 
             var newName by remember { mutableStateOf("") }
@@ -105,7 +105,7 @@ fun EditingBottomSheetManager(
             val event = if (groupsUiState.chosenEvent.value != null) {
                 groupsUiState.eventList[groupsUiState.chosenEvent.value!!]
             } else {
-                groupsViewModel.eventList.getNewEventData(eventNoNameName)
+                groupsViewModel.getNewEventData(eventNoNameName)
             }
 
             var newName by remember { mutableStateOf("") }
@@ -125,7 +125,7 @@ fun EditingBottomSheetManager(
                         newName = eventNoNameName
                     }
                     if (groupsUiState.groupList.size == 0) {
-                        val newGroup = groupsViewModel.groupList.getNewGroupData(groupNoNameName)
+                        val newGroup = groupsViewModel.getNewGroupData(groupNoNameName)
                         groupsUiState.groupList.add(newGroup)
                         listOfGroupData.add(newGroup)
                     }

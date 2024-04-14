@@ -16,11 +16,11 @@ import com.example.final_project_samsung.ui.weeks.WeeksViewModel
 
 @Composable
 fun TheAppNavGraph(
+    modifier: Modifier = Modifier,
     isExpandedScreen: Boolean,
     navController: NavHostController = rememberNavController(),
     openDrawer: () -> Unit,
     startDestination: String = TheAppDestinations.GROUP_VIEW_ROUTE,
-    modifier: Modifier = Modifier
 ) {
     NavHost(
         navController = navController,
@@ -29,28 +29,16 @@ fun TheAppNavGraph(
     ) {
         composable(
             route = TheAppDestinations.GROUP_VIEW_ROUTE,
-//            deepLinks = listOf(
-//                navDeepLink {
-//                    uriPattern =
-//                        "$JETNEWS_APP_URI/${JetnewsDestinations.HOME_ROUTE}?$POST_ID={$POST_ID}"
-//                }
-//            )
         ) {
             val groupsViewModel: GroupsViewModel = viewModel()
             GroupsRoute(
-                GroupsViewModel = groupsViewModel,
+                groupsViewModel = groupsViewModel,
                 isExpandedScreen = isExpandedScreen,
                 openDrawer = openDrawer,
             )
         }
         composable(
             route = TheAppDestinations.WEEK_VIEW_ROUTE,
-//            deepLinks = listOf(
-//                navDeepLink {
-//                    uriPattern =
-//                        "$JETNEWS_APP_URI/${JetnewsDestinations.HOME_ROUTE}?$POST_ID={$POST_ID}"
-//                }
-//            )
         ) {
             val weeksViewModel: WeeksViewModel = viewModel()
             WeeksRoute(

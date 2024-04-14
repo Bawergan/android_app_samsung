@@ -85,7 +85,6 @@ fun DailyLayout(
     groupList: List<GroupData>,
     groupsUiState: GroupsUiState,
 ) {
-//    val masterVerticalScrollState = rememberScrollState()
     val masterHorizontalScrollState = rememberScrollState()
 
     val dayHeight = 1000.dp
@@ -94,10 +93,6 @@ fun DailyLayout(
     val groupBarHeight = 20.dp
     val timeBarWidth = 20.dp
 
-//    val date = YearAndDay(
-//        LocalDateTime.parse("2024-04-07T15:30").year,
-//        LocalDateTime.parse("2024-04-07T15:30").dayOfYear
-//    )
     val date = YearAndDay(
         LocalDateTime.now().year,
         LocalDateTime.now().dayOfYear

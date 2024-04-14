@@ -6,10 +6,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun GroupsRoute(
-    GroupsViewModel: GroupsViewModel,
+    groupsViewModel: GroupsViewModel,
     isExpandedScreen: Boolean,
     openDrawer: () -> Unit
 ) {
-    val uiState by GroupsViewModel.uiState.collectAsStateWithLifecycle()
-    GroupsScreen(GroupsViewModel, uiState, openDrawer)
+    val uiState by groupsViewModel.uiState.collectAsStateWithLifecycle()
+    GroupsScreen(groupsViewModel, uiState, openDrawer)
 }
