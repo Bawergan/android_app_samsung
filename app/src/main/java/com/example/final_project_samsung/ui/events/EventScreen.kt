@@ -1,6 +1,7 @@
 package com.example.final_project_samsung.ui.events
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,8 +23,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.example.final_project_samsung.R
 import com.example.final_project_samsung.data.EventData
+import com.example.final_project_samsung.data.demoListOfEventData
 import com.example.final_project_samsung.data.listOfEventData
 import com.example.final_project_samsung.utils.timeFormatter
 
@@ -41,7 +44,7 @@ fun EventsScreen(
     ) {
         Box(modifier = Modifier.padding(it)) {
             LazyColumn {
-                items(eventsUiState.eventList) { eventData ->
+                items(demoListOfEventData) { eventData ->
                     MakeCard(eventData)
                 }
             }
@@ -51,7 +54,11 @@ fun EventsScreen(
 
 @Composable
 fun MakeCard(eventData: EventData) {
-    Card {
+    Card(
+        Modifier
+            .fillMaxWidth()
+            .padding(bottom = 5.dp)
+    ) {
         Text(text = eventData.eventTags[0])
         Text(
             text = "${eventData.startTime.format(timeFormatter)} - ${

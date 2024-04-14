@@ -1,22 +1,31 @@
 package com.example.final_project_samsung.utils
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimePickerColors
+import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -28,29 +37,51 @@ val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomTimePickerDialog(
-    onAccept: (LocalTime) -> Unit,
-    onCancel: () -> Unit
+    pickerStartTime: LocalTime? = null,
+    onDismissRequest: () -> Unit,
+    onConfirm: (LocalTime) -> Unit,
+    modifier: Modifier = Modifier,
+    shape: Shape = DatePickerDefaults.shape,
+    tonalElevation: Dp = DatePickerDefaults.TonalElevation,
+    colors: TimePickerColors = TimePickerDefaults.colors(),
+    properties: DialogProperties = DialogProperties(usePlatformDefaultWidth = false)
 ) {
-    val state = rememberTimePickerState()
+    val state = rememberTimePickerState(
+        initialMinute = pickerStartTime?.minute ?: 0,
+        initialHour = pickerStartTime?.hour ?: 12
+    )
     BasicAlertDialog(
-        onDismissRequest = { onCancel() },
-        modifier = Modifier.wrapContentHeight(),
-        properties = DialogProperties(usePlatformDefaultWidth = false),
+        onDismissRequest = onDismissRequest,
+        modifier = modifier.wrapContentHeight(),
+        properties = properties,
     ) {
-        Column(verticalArrangement = Arrangement.SpaceBetween) {
-            TimePicker(state = state)
-            // Buttons
-            Box(
-                modifier = Modifier
-                    .align(Alignment.End)
+        Surface(
+            modifier = Modifier
+                .heightIn(max = 568.0.dp),
+            shape = shape,
+            color = colors.containerColor,
+            tonalElevation = tonalElevation,
+        ) {
+            Column(
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
-                Button(onClick = onCancel) {
-                    Text("Cancel")
-                }
-                Button(onClick = { onAccept(state.toLocalTime()) }) {
-                    Text("Accept")
-
+                TimePicker(state = state)
+                // Buttons
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .padding(bottom = 8.dp, end = 6.dp)
+                ) {
+                    Text(text = "Cancel",
+                        Modifier
+                            .clickable { onDismissRequest() }
+                            .padding(end = 10.dp), color = colors.timeSelectorSelectedContentColor)
+                    Text(
+                        "Accept",
+                        Modifier.clickable { onConfirm(state.toLocalTime()) },
+                        color = colors.timeSelectorSelectedContentColor
+                    )
                 }
             }
         }
@@ -75,22 +106,18 @@ private fun TimePickerState.toLocalTime(): LocalTime {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomDatePickerDialog(
-    onAccept: (Long?) -> Unit,
-    onCancel: () -> Unit
+    onConfirm: (Long?) -> Unit,
+    onDismissRequest: () -> Unit
 ) {
     val state = rememberDatePickerState()
 
     DatePickerDialog(
-        onDismissRequest = { onCancel() },
+        onDismissRequest = { onDismissRequest() },
         confirmButton = {
-            Button(onClick = { onAccept(state.selectedDateMillis) }) {
-                Text("Accept")
-            }
+            Text("Accept", Modifier.clickable { onConfirm(state.selectedDateMillis) })
         },
         dismissButton = {
-            Button(onClick = onCancel) {
-                Text("Cancel")
-            }
+            Text("Cancel", Modifier.clickable { onDismissRequest() })
         }
     ) {
         DatePicker(state = state)

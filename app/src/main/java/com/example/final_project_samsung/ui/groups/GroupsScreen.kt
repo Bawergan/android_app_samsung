@@ -43,6 +43,7 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.times
 import com.example.final_project_samsung.R
 import com.example.final_project_samsung.data.EventData
@@ -254,8 +255,10 @@ fun GetContentForDay(
 
 @Composable
 fun EventCardBuilder(event: EventData, gridHeight: Dp, groupsUiState: GroupsUiState, index: Int) {
-    val eventHeight =
+    val eventHeight = max(
+        gridHeight,
         (event.endTime.toEpochSecond(ZoneOffset.UTC) - event.startTime.toEpochSecond(ZoneOffset.UTC)).toInt() / (60f * 60f) * gridHeight
+    )
 
     Card(modifier = Modifier
         .height(eventHeight)

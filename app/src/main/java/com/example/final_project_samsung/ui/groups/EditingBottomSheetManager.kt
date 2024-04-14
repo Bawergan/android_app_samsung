@@ -149,20 +149,20 @@ fun EditingBottomSheetManager(
                 val showStartDatePickerDialog = remember { mutableStateOf(false) }
 
                 if (showStartTimePickerDialog.value) {
-                    CustomTimePickerDialog(onAccept = {
+                    CustomTimePickerDialog(newStartTime.value, onConfirm = {
                         showStartTimePickerDialog.value = false
                         newStartTime.value = it
-                    }, onCancel = { showStartTimePickerDialog.value = false })
+                    }, onDismissRequest = { showStartTimePickerDialog.value = false })
                 }
 
                 if (showStartDatePickerDialog.value) {
-                    CustomDatePickerDialog(onAccept = {
+                    CustomDatePickerDialog(onConfirm = {
                         showStartDatePickerDialog.value = false
                         if (it != null) { // Set the date
                             newStartDate.value =
                                 Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC")).toLocalDate()
                         }
-                    }, onCancel = {
+                    }, onDismissRequest = {
                         showStartDatePickerDialog.value = false //close dialog
                     })
                 }
@@ -181,20 +181,20 @@ fun EditingBottomSheetManager(
                 val showEndDatePickerDialog = remember { mutableStateOf(false) }
 
                 if (showEndTimePickerDialog.value) {
-                    CustomTimePickerDialog(onAccept = {
+                    CustomTimePickerDialog(newStartTime.value, onConfirm = {
                         showEndTimePickerDialog.value = false
                         newEndTime.value = it
-                    }, onCancel = { showEndTimePickerDialog.value = false })
+                    }, onDismissRequest = { showEndTimePickerDialog.value = false })
                 }
 
                 if (showEndDatePickerDialog.value) {
-                    CustomDatePickerDialog(onAccept = {
+                    CustomDatePickerDialog(onConfirm = {
                         showEndDatePickerDialog.value = false
                         if (it != null) { // Set the date
                             newEndDate.value =
                                 Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC")).toLocalDate()
                         }
-                    }, onCancel = {
+                    }, onDismissRequest = {
                         showEndDatePickerDialog.value = false //close dialog
                     })
                 }
