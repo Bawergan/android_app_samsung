@@ -26,7 +26,7 @@ fun TheApp(widthSizeClass: WindowWidthSizeClass) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute =
-        navBackStackEntry?.destination?.route ?: TheAppDestinations.LAZY_GROUP_VIEW_ROUTE
+        navBackStackEntry?.destination?.route ?: TheAppDestinations.GROUP_VIEW_ROUTE
 
 
     val isExpandedScreen = widthSizeClass == WindowWidthSizeClass.Expanded
@@ -39,6 +39,7 @@ fun TheApp(widthSizeClass: WindowWidthSizeClass) {
                 currentRoute = currentRoute,
                 navigateToLazyGroupView = navigationActions.navigateToLazyGroupView,
                 navigateToLazyWeekView = navigationActions.navigateToLazyWeekView,
+                navigateToLazyEventView = navigationActions.navigateToLazyEventView,
                 closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } }
             )
         },
@@ -51,6 +52,7 @@ fun TheApp(widthSizeClass: WindowWidthSizeClass) {
                     currentRoute = currentRoute,
                     navigateToLazyGroupView = navigationActions.navigateToLazyGroupView,
                     navigateToLazyWeekView = navigationActions.navigateToLazyWeekView,
+                    navigateToLazyEventView = navigationActions.navigateToLazyEventView,
                 )
             }
             TheAppNavGraph(

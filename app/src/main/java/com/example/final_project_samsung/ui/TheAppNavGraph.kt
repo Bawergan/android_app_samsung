@@ -7,6 +7,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.final_project_samsung.ui.events.EventsRoute
+import com.example.final_project_samsung.ui.events.EventsViewModel
 import com.example.final_project_samsung.ui.groups.GroupsRoute
 import com.example.final_project_samsung.ui.groups.GroupsViewModel
 import com.example.final_project_samsung.ui.weeks.WeeksRoute
@@ -17,7 +19,7 @@ fun TheAppNavGraph(
     isExpandedScreen: Boolean,
     navController: NavHostController = rememberNavController(),
     openDrawer: () -> Unit,
-    startDestination: String = TheAppDestinations.LAZY_GROUP_VIEW_ROUTE,
+    startDestination: String = TheAppDestinations.GROUP_VIEW_ROUTE,
     modifier: Modifier = Modifier
 ) {
     NavHost(
@@ -26,7 +28,7 @@ fun TheAppNavGraph(
         modifier = modifier
     ) {
         composable(
-            route = TheAppDestinations.LAZY_GROUP_VIEW_ROUTE,
+            route = TheAppDestinations.GROUP_VIEW_ROUTE,
 //            deepLinks = listOf(
 //                navDeepLink {
 //                    uriPattern =
@@ -42,7 +44,7 @@ fun TheAppNavGraph(
             )
         }
         composable(
-            route = TheAppDestinations.LAZY_WEEK_VIEW_ROUTE,
+            route = TheAppDestinations.WEEK_VIEW_ROUTE,
 //            deepLinks = listOf(
 //                navDeepLink {
 //                    uriPattern =
@@ -53,6 +55,16 @@ fun TheAppNavGraph(
             val weeksViewModel: WeeksViewModel = viewModel()
             WeeksRoute(
                 weeksViewModel = weeksViewModel,
+                isExpandedScreen = isExpandedScreen,
+                openDrawer = openDrawer,
+            )
+        }
+        composable(
+            route = TheAppDestinations.EVENT_VIEW_ROUTE,
+        ) {
+            val eventsViewModel: EventsViewModel = viewModel()
+            EventsRoute(
+                eventsViewModel = eventsViewModel,
                 isExpandedScreen = isExpandedScreen,
                 openDrawer = openDrawer,
             )

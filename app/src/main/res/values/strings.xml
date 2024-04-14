@@ -4,5 +4,6 @@
     <string name="no_name_group_default">New group</string>
     <string name="group_view_title">Groups</string>
     <string name="week_view_title">Weeks</string>
+    <string name="event_view_title">Events</string>
     <string name="cd_open_navigation_drawer">open navigation drawer</string>
 </resources>

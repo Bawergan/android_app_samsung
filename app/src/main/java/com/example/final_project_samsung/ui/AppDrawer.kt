@@ -20,6 +20,7 @@ fun AppDrawer(
     currentRoute: String,
     navigateToLazyGroupView: () -> Unit,
     navigateToLazyWeekView: () -> Unit,
+    navigateToLazyEventView: () -> Unit,
     closeDrawer: () -> Job,
     modifier: Modifier = Modifier
 ) {
@@ -28,16 +29,24 @@ fun AppDrawer(
         NavigationDrawerItem(
             label = { Text(stringResource(id = R.string.group_view_title)) },
             icon = { Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null) },
-            selected = currentRoute == TheAppDestinations.LAZY_GROUP_VIEW_ROUTE,
+            selected = currentRoute == TheAppDestinations.GROUP_VIEW_ROUTE,
             onClick = { navigateToLazyGroupView(); closeDrawer() },
             modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
         )
         NavigationDrawerItem(
             label = { Text(stringResource(id = R.string.week_view_title)) },
             icon = { Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null) },
-            selected = currentRoute == TheAppDestinations.LAZY_WEEK_VIEW_ROUTE,
+            selected = currentRoute == TheAppDestinations.WEEK_VIEW_ROUTE,
             onClick = { navigateToLazyWeekView(); closeDrawer() },
             modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
         )
+        NavigationDrawerItem(
+            label = { Text(stringResource(id = R.string.event_view_title)) },
+            icon = { Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null) },
+            selected = currentRoute == TheAppDestinations.EVENT_VIEW_ROUTE,
+            onClick = { navigateToLazyEventView(); closeDrawer() },
+            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+        )
+
     }
 }
