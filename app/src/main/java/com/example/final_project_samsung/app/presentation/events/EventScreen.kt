@@ -1,5 +1,6 @@
 package com.example.final_project_samsung.app.presentation.events
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,16 +24,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.final_project_samsung.R
 import com.example.final_project_samsung.app.domain.model.Event
+import com.example.final_project_samsung.app.presentation.appNavigation.TheAppDestinations
 import com.example.final_project_samsung.utils.timeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventsScreen(
-    eventsViewModel: EventsViewModel,
     eventsUiState: EventsState,
-    openDrawer: () -> Unit
+    openDrawer: () -> Unit,
+    navController: NavController
 ) {
     val topAppBarState = rememberTopAppBarState()
     Scaffold(
@@ -41,7 +44,7 @@ fun EventsScreen(
         Box(modifier = Modifier.padding(it)) {
             LazyColumn {
                 items(eventsUiState.eventList) { eventData ->
-                    MakeCard(eventData)
+                    MakeCard(eventData, navController)
                 }
             }
         }
@@ -49,16 +52,22 @@ fun EventsScreen(
 }
 
 @Composable
-fun MakeCard(eventData: Event) {
+fun MakeCard(event: Event, navController: NavController) {
     Card(
         Modifier
             .fillMaxWidth()
             .padding(bottom = 5.dp)
+            .clickable {
+                navController.navigate(
+                    TheAppDestinations.ADD_EDIT_EVENT_ROUTE +
+                            "?eventId=${event.id}"
+                )
+            }
     ) {
-        Text(text = eventData.eventTags[0])
+        Text(text = event.eventName + event.id.toString())
         Text(
-            text = "${eventData.startTime.format(timeFormatter)} - ${
-                eventData.endTime.format(
+            text = "${event.startTime.format(timeFormatter)} - ${
+                event.endTime.format(
                     timeFormatter
                 )
             }"

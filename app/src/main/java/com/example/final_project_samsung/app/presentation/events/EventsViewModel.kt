@@ -2,7 +2,7 @@ package com.example.final_project_samsung.app.presentation.events
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.final_project_samsung.app.domain.use_case.EventUseCases
+import com.example.final_project_samsung.app.domain.use_case.forEvent.EventUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

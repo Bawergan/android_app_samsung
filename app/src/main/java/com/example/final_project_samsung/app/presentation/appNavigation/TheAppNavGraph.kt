@@ -5,13 +5,16 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.final_project_samsung.app.presentation.addEditScreen.forEvent.AddEditEventBottomSheet
+import com.example.final_project_samsung.app.presentation.addEditScreen.forGroup.AddEditGroupBottomSheet
 import com.example.final_project_samsung.app.presentation.events.EventsRoute
 import com.example.final_project_samsung.app.presentation.events.EventsViewModel
 import com.example.final_project_samsung.app.presentation.groups.GroupsRoute
-import com.example.final_project_samsung.app.presentation.groups.GroupsViewModel
 import com.example.final_project_samsung.app.presentation.weeks.WeeksRoute
 import com.example.final_project_samsung.app.presentation.weeks.WeeksViewModel
 
@@ -32,11 +35,10 @@ fun TheAppNavGraph(
         composable(
             route = TheAppDestinations.GROUP_VIEW_ROUTE,
         ) {
-            val groupsViewModel: GroupsViewModel = viewModel()
             GroupsRoute(
-                groupsViewModel = groupsViewModel,
                 isExpandedScreen = isExpandedScreen,
                 openDrawer = openDrawer,
+                navController = navController,
             )
         }
         composable(
@@ -57,7 +59,31 @@ fun TheAppNavGraph(
                 eventsViewModel = eventsViewModel,
                 isExpandedScreen = isExpandedScreen,
                 openDrawer = openDrawer,
+                navController
             )
         }
+        composable(
+            route = TheAppDestinations.ADD_EDIT_EVENT_ROUTE + "?eventId={eventId}",
+            arguments = listOf(
+                navArgument(name = "eventId") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            )
+        ) {
+            AddEditEventBottomSheet(navController = navController)
+        }
+        composable(
+            route = TheAppDestinations.ADD_EDIT_GROUP_ROUTE + "?groupId={groupId}",
+            arguments = listOf(
+                navArgument(name = "groupId") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            )
+        ) {
+            AddEditGroupBottomSheet(navController = navController)
+        }
+
     }
 }

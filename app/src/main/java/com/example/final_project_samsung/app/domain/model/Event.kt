@@ -8,6 +8,7 @@ import com.example.final_project_samsung.theme.Violet
 import java.time.LocalDateTime
 
 data class Event(
+    val eventName: String,
     val eventTags: MutableList<String>,
     var startTime: LocalDateTime,
     var endTime: LocalDateTime,

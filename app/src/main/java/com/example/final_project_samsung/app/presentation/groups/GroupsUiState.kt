@@ -1,16 +1,18 @@
 package com.example.final_project_samsung.app.presentation.groups
 
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import com.example.final_project_samsung.app.domain.model.Event
+import com.example.final_project_samsung.app.domain.model.Group
 
-class GroupsUiState {
-    var groupList = mutableStateListOf<com.example.final_project_samsung.app.data.GroupData>()
-    var eventList = mutableStateListOf<com.example.final_project_samsung.app.data.EventData>()
+data class GroupsUiState(
+    val groupList: List<Group> = emptyList(),
+    val eventList: List<Event> = emptyList(),
 
-    var isMainActionButtonClicked = mutableStateOf(false)
-    var isGroupEditingBottomSheetOpen = mutableStateOf(false)
-    var isEventEditingBottomSheetOpen = mutableStateOf(false)
+    var isMainActionButtonClicked: MutableState<Boolean> = mutableStateOf(false),
+    var isGroupEditingBottomSheetOpen: MutableState<Boolean> = mutableStateOf(false),
+    var isEventEditingBottomSheetOpen: MutableState<Boolean> = mutableStateOf(false),
 
-    var chosenGroup = mutableStateOf<Int?>(null)
-    var chosenEvent = mutableStateOf<Int?>(null)
-}
+    var chosenGroup: MutableState<Int?> = mutableStateOf(null),
+    var chosenEvent: MutableState<Int?> = mutableStateOf(null)
+)

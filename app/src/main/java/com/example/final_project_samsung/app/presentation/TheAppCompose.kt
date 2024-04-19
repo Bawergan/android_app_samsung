@@ -3,6 +3,7 @@ package com.example.final_project_samsung.app.presentation
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -19,6 +20,7 @@ import com.example.final_project_samsung.app.presentation.appNavigation.TheAppNa
 import com.example.final_project_samsung.app.presentation.appNavigation.TheAppNavigationActions
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TheAppCompose(widthSizeClass: WindowWidthSizeClass) {
 
@@ -36,7 +38,6 @@ fun TheAppCompose(widthSizeClass: WindowWidthSizeClass) {
 
     val isExpandedScreen = widthSizeClass == WindowWidthSizeClass.Expanded
     val sizeAwareDrawerState = rememberSizeAwareDrawerState(isExpandedScreen)
-
 
     ModalNavigationDrawer(
         drawerContent = {

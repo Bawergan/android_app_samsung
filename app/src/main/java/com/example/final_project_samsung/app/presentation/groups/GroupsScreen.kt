@@ -35,7 +35,6 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -45,7 +44,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.times
+import androidx.navigation.NavController
 import com.example.final_project_samsung.R
+import com.example.final_project_samsung.app.domain.model.Event
+import com.example.final_project_samsung.app.domain.model.Group
+import com.example.final_project_samsung.app.presentation.appNavigation.TheAppDestinations
 import com.example.final_project_samsung.utils.timeFormatter
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -56,33 +59,35 @@ import java.time.ZoneOffset
 fun GroupsScreen(
     groupViewModel: GroupsViewModel,
     groupsUiState: GroupsUiState,
-    openDrawer: () -> Unit
+    openDrawer: () -> Unit,
+    navController: NavController
 ) {
-    groupsUiState.eventList =
-        com.example.final_project_samsung.app.data.listOfEventData.toMutableStateList()
     val topAppBarState = rememberTopAppBarState()
     Scaffold(
         topBar = { GroupsTopAppBar(openDrawer = openDrawer, topAppBarState = topAppBarState) },
         floatingActionButton = {
-            FloatingActionButtonManager(groupsUiState)
+            FloatingActionButtonManager(groupsUiState, navController)
         }) {
         Box(modifier = Modifier.padding(it)) {
             DailyLayout(
                 eventList = groupsUiState.eventList,
                 groupList = groupsUiState.groupList,
-                groupsUiState = groupsUiState
+                groupsUiState = groupsUiState,
+                groupViewModel = groupViewModel,
+                navController = navController
             )
         }
-        EditingBottomSheetManager(groupsUiState = groupsUiState, groupsViewModel = groupViewModel)
     }
 }
 
 @Composable
 fun DailyLayout(
     modifier: Modifier = Modifier,
-    eventList: List<com.example.final_project_samsung.app.data.EventData>,
-    groupList: List<com.example.final_project_samsung.app.data.GroupData>,
+    eventList: List<Event>,
+    groupList: List<Group>,
     groupsUiState: GroupsUiState,
+    groupViewModel: GroupsViewModel,
+    navController: NavController
 ) {
     val masterHorizontalScrollState = rememberScrollState()
 
@@ -126,7 +131,9 @@ fun DailyLayout(
                         .width(gridWidth * groupList.size + timeBarWidth)
                         .padding(start = timeBarWidth, top = groupBarHeight),
                     eventList,
-                    groupsUiState
+                    groupsUiState,
+                    groupViewModel,
+                    navController
                 )
 
                 Column(modifier = Modifier.width(timeBarWidth)) {
@@ -162,14 +169,17 @@ fun DailyLayout(
             .horizontalScroll(masterHorizontalScrollState)
             .padding(start = timeBarWidth)
     ) {
-        groupList.forEachIndexed { index, group ->
-            Text(text = group.groupTags[0],
+        groupList.forEach { group ->
+            Text(
+                text = group.groupName,
                 Modifier
                     .height(groupBarHeight)
                     .width(gridWidth)
                     .clickable {
-                        groupsUiState.isGroupEditingBottomSheetOpen.value = true
-                        groupsUiState.chosenGroup.value = index
+                        navController.navigate(
+                            TheAppDestinations.ADD_EDIT_GROUP_ROUTE +
+                                    "?groupId=${group.id}"
+                        )
                     })
         }
     }
@@ -180,7 +190,7 @@ fun CanvasForDay(
     gridHeight: Dp,
     gridWidth: Dp,
     modifier: Modifier = Modifier,
-    groupList: List<com.example.final_project_samsung.app.data.GroupData>
+    groupList: List<Group>
 ) {
     val color = MaterialTheme.colorScheme.outlineVariant
 
@@ -205,11 +215,22 @@ fun LayoutForDay(
     gridWidth: Dp,
     gridHeight: Dp,
     modifier: Modifier = Modifier,
-    eventList: List<com.example.final_project_samsung.app.data.EventData>,
-    groupsUiState: GroupsUiState
+    eventList: List<Event>,
+    groupsUiState: GroupsUiState,
+    groupViewModel: GroupsViewModel,
+    navController: NavController
 ) {
     Layout(
-        content = { GetContentForDay(yearAndDay, gridHeight, eventList, groupsUiState) },
+        content = {
+            GetContentForDay(
+                yearAndDay,
+                gridHeight,
+                eventList,
+                groupsUiState,
+                groupViewModel,
+                navController
+            )
+        },
         modifier = modifier
     ) { measurables, constraints ->
         val itemConstraints =
@@ -222,10 +243,10 @@ fun LayoutForDay(
         layout(constraints.maxWidth, dayHeight.roundToPx()) {
             var index = 0
             placeables.forEach { placeable ->
-                val eventData = listOfEventDataInDay[index]
+                val eventDataToPlace = listOfEventDataInDay[index]
                 val y =
-                    (eventData.event.startTime.hour + eventData.event.startTime.minute / 60f) * gridHeight
-                val x = eventData.group.positionInView * gridWidth
+                    (eventDataToPlace.event.startTime.hour + eventDataToPlace.event.startTime.minute / 60f) * gridHeight
+                val x = (eventDataToPlace.group?.positionInView ?: 0) * gridWidth
                 placeable.placeRelative(x.roundToPx(), y.roundToPx())
                 index++
             }
@@ -236,22 +257,29 @@ fun LayoutForDay(
 val listOfEventDataInDay = mutableListOf<EventDataToPlace>()
 
 data class EventDataToPlace(
-    val event: com.example.final_project_samsung.app.data.EventData,
-    val group: com.example.final_project_samsung.app.data.GroupData
+    val event: Event,
+    val group: Group?
 )
 
 @Composable
 fun GetContentForDay(
     yearAndDay: YearAndDay,
     gridHeight: Dp,
-    eventDataList: List<com.example.final_project_samsung.app.data.EventData>,
-    groupsUiState: GroupsUiState
+    eventDataList: List<Event>,
+    groupsUiState: GroupsUiState,
+    groupViewModel: GroupsViewModel,
+    navController: NavController
 ) {
     eventDataList.forEach { event ->
-        event.groupsForEvent.forEachIndexed { index, group ->
+        event.groupsForEvent.forEachIndexed { _, groupId ->
             if (event.startTime.year == yearAndDay.year && event.startTime.dayOfYear == yearAndDay.day) {
-                listOfEventDataInDay.add(EventDataToPlace(event, group))
-                EventCardBuilder(event, gridHeight, groupsUiState, index)
+                listOfEventDataInDay.add(
+                    EventDataToPlace(
+                        event,
+                        groupViewModel.getGroupById(groupId)
+                    )
+                )
+                EventCardBuilder(event, gridHeight, navController)
             }
         }
     }
@@ -259,25 +287,26 @@ fun GetContentForDay(
 
 @Composable
 fun EventCardBuilder(
-    event: com.example.final_project_samsung.app.data.EventData,
+    event: Event,
     gridHeight: Dp,
-    groupsUiState: GroupsUiState,
-    index: Int
+    navController: NavController
 ) {
     val eventHeight = max(
         gridHeight,
         (event.endTime.toEpochSecond(ZoneOffset.UTC) - event.startTime.toEpochSecond(ZoneOffset.UTC)).toInt() / (60f * 60f) * gridHeight
     )
-
     Card(modifier = Modifier
         .height(eventHeight)
         .clickable {
-            groupsUiState.chosenEvent.value = index
-            groupsUiState.isEventEditingBottomSheetOpen.value = true
+            navController.context
+            navController.navigate(
+                TheAppDestinations.ADD_EDIT_EVENT_ROUTE +
+                        "?eventId=${event.id}"
+            )
         }) {
         val startTime = event.startTime.toLocalTime().format(timeFormatter)
         val endTime = event.endTime.toLocalTime().format(timeFormatter)
-        Text(text = event.eventTags[0])
+        Text(text = event.eventName)
         Text(text = "$startTime - $endTime")
     }
 }
@@ -297,24 +326,27 @@ fun getListOfDays(now: LocalDateTime): List<YearAndDay> {
 }
 
 @Composable
-fun FloatingActionButtonManager(groupsUiState: GroupsUiState) {
+fun FloatingActionButtonManager(groupsUiState: GroupsUiState, navController: NavController) {
     if (groupsUiState.isMainActionButtonClicked.value) {
         Column {
             Button(onClick = {
-                groupsUiState.isGroupEditingBottomSheetOpen.value = true
-                groupsUiState.isMainActionButtonClicked.value = false
+                navController.navigate(
+                    TheAppDestinations.ADD_EDIT_GROUP_ROUTE +
+                            "?groupId=${-1}"
+                )
             }) {
                 Text(text = "New Group")
             }
             Button(onClick = {
-                groupsUiState.isEventEditingBottomSheetOpen.value = true
-                groupsUiState.isMainActionButtonClicked.value = false
+                navController.navigate(
+                    TheAppDestinations.ADD_EDIT_EVENT_ROUTE +
+                            "?eventId=${-1}"
+                )
             }) {
                 Text(text = "New Event")
             }
         }
     } else {
-
         FloatingActionButton(onClick = {
             groupsUiState.isMainActionButtonClicked.value = true
         }) {

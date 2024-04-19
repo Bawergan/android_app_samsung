@@ -7,6 +7,8 @@ object TheAppDestinations {
     const val GROUP_VIEW_ROUTE = "groupView"
     const val WEEK_VIEW_ROUTE = "weekView"
     const val EVENT_VIEW_ROUTE = "eventView"
+    const val ADD_EDIT_EVENT_ROUTE = "addEditEventRoute"
+    const val ADD_EDIT_GROUP_ROUTE = "addEditGroupRoute"
 }
 
 class TheAppNavigationActions(navController: NavHostController) {

@@ -1,11 +1,14 @@
-package com.example.final_project_samsung.app.data.data_source
+package com.example.final_project_samsung.app.data.data_source.eventData
 
+import com.example.final_project_samsung.app.data.data_source.jsonToList
+import com.example.final_project_samsung.app.data.data_source.listOfIntToJson
+import com.example.final_project_samsung.app.data.data_source.listOfStringToJson
 import com.example.final_project_samsung.app.domain.model.Event
-import com.google.gson.Gson
 import java.time.LocalDateTime
 
 fun EntityEvent.toEvent(): Event {
     return Event(
+        this.eventName,
         jsonToList(this.eventTags).toMutableList(),
         LocalDateTime.parse(this.startTime),
         LocalDateTime.parse(this.endTime),
@@ -16,6 +19,7 @@ fun EntityEvent.toEvent(): Event {
 
 fun Event.toEntity(): EntityEvent {
     return EntityEvent(
+        this.eventName,
         listOfStringToJson(this.eventTags),
         this.startTime.toString(),
         this.endTime.toString(),
@@ -24,8 +28,3 @@ fun Event.toEntity(): EntityEvent {
     )
 
 }
-
-fun listOfIntToJson(value: List<Int>): String = Gson().toJson(value)
-fun listOfStringToJson(value: List<String>): String = Gson().toJson(value)
-fun jsonToList(value: String): List<String> =
-    Gson().fromJson(value, Array<String>::class.java).toList()
