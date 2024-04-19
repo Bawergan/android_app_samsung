@@ -2,6 +2,7 @@ package com.example.final_project_samsung.app.presentation.addEditScreen.forEven
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -31,8 +32,8 @@ class AddEdiEventViewModel @Inject constructor(
     private val _eventEndTime = mutableStateOf(LocalDateTime.now().plusHours(1))
     val eventEndTime: State<LocalDateTime> = _eventEndTime
 
-    private val _groupsForEvent = mutableStateListOf<Int>()
-    val groupsForEvent: SnapshotStateList<Int> = _groupsForEvent
+    private val _groupId = mutableIntStateOf(1)
+    val groupId: State<Int> = _groupId
 
     private val _eventTags = mutableStateListOf<String>()
     val eventTags: SnapshotStateList<String> = _eventTags
@@ -52,7 +53,7 @@ class AddEdiEventViewModel @Inject constructor(
                         _eventName.value = event.eventName
                         _eventStartTime.value = event.startTime
                         _eventEndTime.value = event.endTime
-                        _groupsForEvent.addAll(event.groupsForEvent)
+                        _groupId.value = event.groupId
                         _eventTags.addAll(event.eventTags)
                     }
                 }
@@ -62,13 +63,13 @@ class AddEdiEventViewModel @Inject constructor(
 
     fun onEvent(event: AddEditEventEvent) {
         when (event) {
-            is AddEditEventEvent.SaveEvent -> {
+            is AddEditEventEvent.Save -> {
                 viewModelScope.launch {
                     eventUseCases.addEvent(
                         Event(
                             eventName = eventName.value,
                             eventTags = eventTags.toMutableList(),
-                            groupsForEvent = groupsForEvent,
+                            groupId = groupId.value,
                             startTime = eventStartTime.value,
                             endTime = eventEndTime.value,
                             id = _currentEventId.value
@@ -78,7 +79,7 @@ class AddEdiEventViewModel @Inject constructor(
                 }
             }
 
-            is AddEditEventEvent.DeleteEvent -> {
+            is AddEditEventEvent.Delete -> {
                 viewModelScope.launch {
                     eventUseCases.deleteEvent(
                         eventUseCases.getEventById(
@@ -89,7 +90,7 @@ class AddEdiEventViewModel @Inject constructor(
                 }
             }
 
-            is AddEditEventEvent.ChangeEventName -> {
+            is AddEditEventEvent.ChangeName -> {
                 _eventName.value = event.value
             }
 
@@ -99,6 +100,10 @@ class AddEdiEventViewModel @Inject constructor(
 
             is AddEditEventEvent.ChangeEndTime -> {
                 _eventEndTime.value = event.value
+            }
+
+            is AddEditEventEvent.ChangeGroup -> {
+                _groupId.intValue = event.value
             }
         }
     }

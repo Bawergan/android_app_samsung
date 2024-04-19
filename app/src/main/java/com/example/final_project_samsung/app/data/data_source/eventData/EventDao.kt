@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface EventDao {
-    @Query("SELECT * FROM event")
+    @Query("SELECT * FROM events")
     fun getEvents(): Flow<List<EntityEvent>>
 
-    @Query("SELECT * FROM event WHERE id = :id")
+    @Query("SELECT * FROM events WHERE eventId = :id")
     suspend fun getEventById(id: Int): EntityEvent?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

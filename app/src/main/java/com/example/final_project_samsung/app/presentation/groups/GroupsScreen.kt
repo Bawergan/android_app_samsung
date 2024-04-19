@@ -72,7 +72,6 @@ fun GroupsScreen(
             DailyLayout(
                 eventList = groupsUiState.eventList,
                 groupList = groupsUiState.groupList,
-                groupsUiState = groupsUiState,
                 groupViewModel = groupViewModel,
                 navController = navController
             )
@@ -85,7 +84,6 @@ fun DailyLayout(
     modifier: Modifier = Modifier,
     eventList: List<Event>,
     groupList: List<Group>,
-    groupsUiState: GroupsUiState,
     groupViewModel: GroupsViewModel,
     navController: NavController
 ) {
@@ -131,7 +129,6 @@ fun DailyLayout(
                         .width(gridWidth * groupList.size + timeBarWidth)
                         .padding(start = timeBarWidth, top = groupBarHeight),
                     eventList,
-                    groupsUiState,
                     groupViewModel,
                     navController
                 )
@@ -171,7 +168,7 @@ fun DailyLayout(
     ) {
         groupList.forEach { group ->
             Text(
-                text = group.groupName,
+                text = if (group.groupName == "") stringResource(id = R.string.no_name_group_default) else group.groupName,
                 Modifier
                     .height(groupBarHeight)
                     .width(gridWidth)
@@ -216,7 +213,6 @@ fun LayoutForDay(
     gridHeight: Dp,
     modifier: Modifier = Modifier,
     eventList: List<Event>,
-    groupsUiState: GroupsUiState,
     groupViewModel: GroupsViewModel,
     navController: NavController
 ) {
@@ -226,7 +222,6 @@ fun LayoutForDay(
                 yearAndDay,
                 gridHeight,
                 eventList,
-                groupsUiState,
                 groupViewModel,
                 navController
             )
@@ -266,23 +261,22 @@ fun GetContentForDay(
     yearAndDay: YearAndDay,
     gridHeight: Dp,
     eventDataList: List<Event>,
-    groupsUiState: GroupsUiState,
     groupViewModel: GroupsViewModel,
     navController: NavController
 ) {
-    eventDataList.forEach { event ->
-        event.groupsForEvent.forEachIndexed { _, groupId ->
-            if (event.startTime.year == yearAndDay.year && event.startTime.dayOfYear == yearAndDay.day) {
-                listOfEventDataInDay.add(
-                    EventDataToPlace(
-                        event,
-                        groupViewModel.getGroupById(groupId)
-                    )
-                )
-                EventCardBuilder(event, gridHeight, navController)
-            }
-        }
-    }
+//    eventDataList.forEach { event ->
+//        event.groupId.forEachIndexed { _, groupId ->
+//            if (event.startTime.year == yearAndDay.year && event.startTime.dayOfYear == yearAndDay.day) {
+//                listOfEventDataInDay.add(
+//                    EventDataToPlace(
+//                        event,
+//                        groupViewModel.getGroupById(groupId)
+//                    )
+//                )
+//                EventCardBuilder(event, gridHeight, navController)
+//            }
+//        }
+//    }
 }
 
 @Composable
@@ -306,7 +300,7 @@ fun EventCardBuilder(
         }) {
         val startTime = event.startTime.toLocalTime().format(timeFormatter)
         val endTime = event.endTime.toLocalTime().format(timeFormatter)
-        Text(text = event.eventName)
+        Text(text = if (event.eventName == "") stringResource(R.string.no_name_group_default) else event.eventName)
         Text(text = "$startTime - $endTime")
     }
 }

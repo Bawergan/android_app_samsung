@@ -2,8 +2,7 @@ package com.example.final_project_samsung.di
 
 import android.app.Application
 import androidx.room.Room
-import com.example.final_project_samsung.app.data.data_source.eventData.EventDb
-import com.example.final_project_samsung.app.data.data_source.groupData.GroupDb
+import com.example.final_project_samsung.app.data.data_source.TheAppDb
 import com.example.final_project_samsung.app.data.repository.EventRepositoryImpl
 import com.example.final_project_samsung.app.data.repository.GroupRepositoryImpl
 import com.example.final_project_samsung.app.domain.repository.EventRepository
@@ -29,18 +28,24 @@ import javax.inject.Singleton
 object AppModule {
     @Provides
     @Singleton
-    fun provideEventDb(app: Application): EventDb {
+    fun provideEventDb(app: Application): TheAppDb {
         return Room.databaseBuilder(
             app,
-            EventDb::class.java,
-            EventDb.DATABASE_NAME
+            TheAppDb::class.java,
+            TheAppDb.DATABASE_NAME
         ).build()
     }
 
     @Provides
     @Singleton
-    fun provideEventRepository(db: EventDb): EventRepository {
+    fun provideEventRepository(db: TheAppDb): EventRepository {
         return EventRepositoryImpl(db.eventDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupRepository(db: TheAppDb): GroupRepository {
+        return GroupRepositoryImpl(db.groupDao)
     }
 
     @Provides
@@ -52,23 +57,6 @@ object AppModule {
             addEvent = AddEvent(repository),
             getEventById = GetEventById(repository)
         )
-    }
-
-
-    @Provides
-    @Singleton
-    fun provideGroupDb(app: Application): GroupDb {
-        return Room.databaseBuilder(
-            app,
-            GroupDb::class.java,
-            GroupDb.DATABASE_NAME
-        ).build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideGroupRepository(db: GroupDb): GroupRepository {
-        return GroupRepositoryImpl(db.groupDao)
     }
 
     @Provides

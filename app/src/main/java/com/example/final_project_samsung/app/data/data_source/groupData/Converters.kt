@@ -10,7 +10,7 @@ fun EntityGroup.toGroup(): Group {
         groupName = this.groupName,
         groupTags = jsonToList(this.groupTags),
         positionInView = this.positionInView,
-        id = this.id
+        id = this.groupId
     )
 }
 
@@ -19,7 +19,7 @@ fun Group.toEntity(): EntityGroup {
         groupName = this.groupName,
         groupTags = listOfStringToJson(this.groupTags),
         positionInView = this.positionInView,
-        id = this.id
+        groupId = this.id
     )
 }
 

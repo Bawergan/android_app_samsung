@@ -13,5 +13,5 @@ fun EventsRoute(
     navController: NavController
 ) {
     val state by eventsViewModel.state.collectAsStateWithLifecycle()
-    EventsScreen(eventsViewModel, state, openDrawer, navController)
+    EventsScreen(state, openDrawer, navController)
 }

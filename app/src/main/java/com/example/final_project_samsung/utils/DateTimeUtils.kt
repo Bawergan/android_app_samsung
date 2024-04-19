@@ -4,14 +4,17 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimePicker
@@ -59,29 +62,44 @@ fun CustomTimePickerDialog(
             modifier = Modifier
                 .heightIn(max = 568.0.dp),
             shape = shape,
-            color = colors.containerColor,
+            color = DatePickerDefaults.colors().containerColor,
             tonalElevation = tonalElevation,
         ) {
-            Column(
-                verticalArrangement = Arrangement.SpaceBetween,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                TimePicker(state = state)
-                // Buttons
-                Row(
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(bottom = 8.dp, end = 6.dp)
+            Column(modifier = Modifier.padding(3.dp)) {
+                Row(modifier = Modifier.padding(14.dp)) {
+                    Spacer(modifier = Modifier.width(3.dp))
+                    Text(text = "Select time", style = MaterialTheme.typography.bodySmall)
+                }
+
+                Column(
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Text(text = "Cancel",
-                        Modifier
-                            .clickable { onDismissRequest() }
-                            .padding(end = 10.dp), color = colors.timeSelectorSelectedContentColor)
-                    Text(
-                        "Accept",
-                        Modifier.clickable { onConfirm(state.toLocalTime()) },
-                        color = colors.timeSelectorSelectedContentColor
+
+                    TimePicker(
+                        state = state,
+                        Modifier.padding(start = 20.dp, end = 20.dp),
+                        colors = TimePickerDefaults.colors().copy(
+                            clockDialColor = MaterialTheme.colorScheme.surfaceContainerHighest
+                        )
                     )
+                    // Buttons
+                    Row(
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .padding(bottom = 8.dp, end = 6.dp)
+                    ) {
+                        Text(text = "Cancel",
+                            Modifier
+                                .clickable { onDismissRequest() }
+                                .padding(end = 10.dp),
+                            color = colors.timeSelectorSelectedContentColor)
+                        Text(
+                            "Accept",
+                            Modifier.clickable { onConfirm(state.toLocalTime()) },
+                            color = colors.timeSelectorSelectedContentColor
+                        )
+                    }
                 }
             }
         }

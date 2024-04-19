@@ -39,7 +39,7 @@ val fakeRepo = listOf(
         eventTags = mutableListOf(""),
         startTime = LocalDateTime.parse("2024-04-07T15:30"),
         endTime = LocalDateTime.parse("2024-04-07T20:30"),
-        groupsForEvent = mutableListOf(0)
+        groupId = 0
     ),
     Event(
         eventName = "my first title",
@@ -47,7 +47,7 @@ val fakeRepo = listOf(
         eventTags = mutableListOf("my first title"),
         startTime = LocalDateTime.parse("2024-04-07T15:30"),
         endTime = LocalDateTime.parse("2024-04-07T20:30"),
-        groupsForEvent = mutableListOf(0)
+        groupId = 0
     ),
     Event(
         eventName = "my first title",
@@ -55,7 +55,7 @@ val fakeRepo = listOf(
         eventTags = mutableListOf("my first title"),
         startTime = LocalDateTime.parse("2024-04-08T15:30"),
         endTime = LocalDateTime.parse("2024-04-08T20:30"),
-        groupsForEvent = mutableListOf(0)
+        groupId = 0
     ),
     Event(
         eventName = "my first title",
@@ -63,6 +63,6 @@ val fakeRepo = listOf(
         eventTags = mutableListOf("my first title"),
         startTime = LocalDateTime.parse("2024-04-07T21:30"),
         endTime = LocalDateTime.parse("2024-04-08T02:30"),
-        groupsForEvent = mutableListOf(0)
+        groupId = 0
     ),
 )

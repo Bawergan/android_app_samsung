@@ -9,10 +9,10 @@ import java.time.LocalDateTime
 
 data class Event(
     val eventName: String,
-    val eventTags: MutableList<String>,
+    val eventTags: List<String>,
     var startTime: LocalDateTime,
     var endTime: LocalDateTime,
-    var groupsForEvent: MutableList<Int>,
+    var groupId: Int,
     val id: Int?
 ) {
     companion object {

@@ -13,10 +13,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.final_project_samsung.R
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,7 +24,6 @@ fun AddEditGroupBottomSheet(
     navController: NavHostController
 ) {
 
-    val groupNoNameName = stringResource(R.string.no_name_group_default)
     val isClosingState = remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = true) {
@@ -52,15 +49,8 @@ fun AddEditGroupBottomSheet(
         }, Modifier.navigationBarsPadding()
     ) {
 
-        if (addEditGroupViewModel.groupName.value == groupNoNameName) {
-            addEditGroupViewModel.onEvent(AddEditGroupEvent.ChangeName(""))
-        }
-
         Column {
             Button(onClick = {
-                if (addEditGroupViewModel.groupName.value == "") {
-                    addEditGroupViewModel.onEvent(AddEditGroupEvent.ChangeName(groupNoNameName))
-                }
                 if (!isClosingState.value) {
                     addEditGroupViewModel.onEvent(AddEditGroupEvent.Save)
                 }

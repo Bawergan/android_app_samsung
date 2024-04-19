@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface GroupDao {
-    @Query("SELECT * FROM `group`")
+    @Query("SELECT * FROM groups")
     fun getGroups(): Flow<List<EntityGroup>>
 
-    @Query("SELECT * FROM `group` WHERE id = :id")
+    @Query("SELECT * FROM groups WHERE groupId = :id")
     suspend fun getGroupById(id: Int): EntityGroup?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

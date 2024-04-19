@@ -1,7 +1,6 @@
 package com.example.final_project_samsung.app.data.data_source.eventData
 
 import com.example.final_project_samsung.app.data.data_source.jsonToList
-import com.example.final_project_samsung.app.data.data_source.listOfIntToJson
 import com.example.final_project_samsung.app.data.data_source.listOfStringToJson
 import com.example.final_project_samsung.app.domain.model.Event
 import java.time.LocalDateTime
@@ -12,8 +11,8 @@ fun EntityEvent.toEvent(): Event {
         jsonToList(this.eventTags).toMutableList(),
         LocalDateTime.parse(this.startTime),
         LocalDateTime.parse(this.endTime),
-        jsonToList(this.groupsIds).map { it.toInt() }.toMutableList(),
-        this.id
+        this.groupId,
+        this.eventId
     )
 }
 
@@ -23,7 +22,7 @@ fun Event.toEntity(): EntityEvent {
         listOfStringToJson(this.eventTags),
         this.startTime.toString(),
         this.endTime.toString(),
-        listOfIntToJson(this.groupsForEvent),
+        this.groupId,
         this.id
     )
 
