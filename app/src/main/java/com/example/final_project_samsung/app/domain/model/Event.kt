@@ -13,7 +13,7 @@ data class Event(
     var startTime: LocalDateTime,
     var endTime: LocalDateTime,
     var groupId: Int,
-    val id: Int?
+    val eventId: Int?
 ) {
     companion object {
         val eventColors = listOf(RedOrange, RedPink, BabyBlue, Violet, LightGreen)

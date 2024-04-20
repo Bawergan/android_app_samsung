@@ -60,11 +60,11 @@ fun MakeCard(event: Event, navController: NavController) {
             .clickable {
                 navController.navigate(
                     TheAppDestinations.ADD_EDIT_EVENT_ROUTE +
-                            "?eventId=${event.id}"
+                            "?eventId=${event.eventId}"
                 )
             }
     ) {
-        Text(text = event.eventName + event.id.toString())
+        Text(text = event.eventName + event.eventId.toString())
         Text(
             text = "${event.startTime.format(timeFormatter)} - ${
                 event.endTime.format(

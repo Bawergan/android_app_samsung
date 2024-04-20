@@ -63,7 +63,6 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditEventBottomSheet(
     addEdiEventViewModel: AddEdiEventViewModel = hiltViewModel(),
@@ -247,7 +246,7 @@ fun AddEditEventBottomSheet(
 
 @Composable
 @Preview
-fun preview() {
+fun Preview() {
     Scaffold(
         Modifier.navigationBarsPadding()
     ) {

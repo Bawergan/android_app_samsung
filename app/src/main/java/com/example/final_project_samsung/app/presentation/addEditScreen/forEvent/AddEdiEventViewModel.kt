@@ -49,11 +49,11 @@ class AddEdiEventViewModel @Inject constructor(
             if (eventId != -1 && eventId != null) {
                 viewModelScope.launch {
                     eventUseCases.getEventById(eventId)?.also { event ->
-                        _currentEventId.value = event.id
+                        _currentEventId.value = event.eventId
                         _eventName.value = event.eventName
                         _eventStartTime.value = event.startTime
                         _eventEndTime.value = event.endTime
-                        _groupId.value = event.groupId
+                        _groupId.intValue = event.groupId
                         _eventTags.addAll(event.eventTags)
                     }
                 }
@@ -72,7 +72,7 @@ class AddEdiEventViewModel @Inject constructor(
                             groupId = groupId.value,
                             startTime = eventStartTime.value,
                             endTime = eventEndTime.value,
-                            id = _currentEventId.value
+                            eventId = _currentEventId.value
                         )
                     )
                     _eventFlow.emit(UiEvent.SaveEvent)

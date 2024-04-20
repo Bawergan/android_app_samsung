@@ -23,7 +23,7 @@ fun Event.toEntity(): EntityEvent {
         this.startTime.toString(),
         this.endTime.toString(),
         this.groupId,
-        this.id
+        this.eventId
     )
 
 }
