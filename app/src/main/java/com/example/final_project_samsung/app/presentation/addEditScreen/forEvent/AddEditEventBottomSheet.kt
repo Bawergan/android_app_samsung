@@ -7,7 +7,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -350,8 +349,8 @@ fun Preview() {
     }
 }
 
-val RIGHT_COLUMN_WIDTH = 50.dp
-val TOP_ROW_HEIGHT = 10.dp
+private val RIGHT_COLUMN_WIDTH = 50.dp
+private val TOP_ROW_HEIGHT = 10.dp
 
 @Composable
 fun myButtonColors(): ButtonColors {
@@ -470,7 +469,6 @@ fun CustomButton(
     colors: ButtonColors = ButtonDefaults.buttonColors(),
 //    elevation: ButtonElevation? = ButtonDefaults.buttonElevation(),
     border: BorderStroke? = null,
-    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable RowScope.() -> Unit
 ) {

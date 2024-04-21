@@ -1,5 +1,6 @@
 package com.example.final_project_samsung.app.presentation.groups
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -30,7 +31,7 @@ import com.example.final_project_samsung.R
 import com.example.final_project_samsung.app.presentation.appNavigation.TheAppDestinations
 import com.example.final_project_samsung.app.presentation.groups.customLazyLayout.CustomLazyLayoutScreen
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun GroupsRoute(
     groupsViewModel: GroupsViewModel = hiltViewModel(),
@@ -39,7 +40,6 @@ fun GroupsRoute(
     navController: NavController,
 ) {
     val groupsUiState by groupsViewModel.state.collectAsStateWithLifecycle()
-    val state by groupsViewModel.stateLayout.collectAsStateWithLifecycle()
     val topAppBarState = rememberTopAppBarState()
     Scaffold(
         topBar = { GroupsTopAppBar(openDrawer = openDrawer, topAppBarState = topAppBarState) },
@@ -48,10 +48,14 @@ fun GroupsRoute(
         }
     ) {
         Box(Modifier.padding(it)) {
-            CustomLazyLayoutScreen(state = state, navController)
+            CustomLazyLayoutScreen(groupsUiState, navController)
         }
     }
 //    GroupsScreen(groupsViewModel, uiState, openDrawer, navController)
+
+//    LazyColumn {
+//        stickyHeader { Text(text = "sd") }
+//    }
 }
 
 

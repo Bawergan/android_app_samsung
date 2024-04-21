@@ -11,10 +11,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.final_project_samsung.app.presentation.addEditScreen.forEvent.AddEditEventBottomSheet
-import com.example.final_project_samsung.app.presentation.addEditScreen.forGroup.AddEditGroupBottomSheet
+import com.example.final_project_samsung.app.presentation.addEditScreen.forEvent.AddEditGroupBottomSheet
 import com.example.final_project_samsung.app.presentation.events.EventsRoute
 import com.example.final_project_samsung.app.presentation.events.EventsViewModel
 import com.example.final_project_samsung.app.presentation.groups.GroupsRoute
+import com.example.final_project_samsung.app.presentation.groups.GroupsViewModel
 import com.example.final_project_samsung.app.presentation.weeks.WeeksRoute
 import com.example.final_project_samsung.app.presentation.weeks.WeeksViewModel
 
@@ -35,10 +36,13 @@ fun TheAppNavGraph(
         composable(
             route = TheAppDestinations.GROUP_VIEW_ROUTE,
         ) {
+            val groupsViewModel: GroupsViewModel = hiltViewModel()
+
             GroupsRoute(
                 isExpandedScreen = isExpandedScreen,
                 openDrawer = openDrawer,
                 navController = navController,
+                groupsViewModel = groupsViewModel
             )
         }
         composable(

@@ -29,3 +29,15 @@ class GroupRepositoryImpl(
         dao.deleteGroup(group.toEntity())
     }
 }
+
+private val fakeRepo = listOf(
+    Group(
+        groupName = "newGroup",
+        groupTags = emptyList(),
+        id = 0
+    ), Group(
+        groupName = "newGroup",
+        groupTags = emptyList(),
+        id = 0
+    )
+)

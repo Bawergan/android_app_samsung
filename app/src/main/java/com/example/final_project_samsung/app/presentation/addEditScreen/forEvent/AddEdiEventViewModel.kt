@@ -32,7 +32,7 @@ class AddEdiEventViewModel @Inject constructor(
     private val _eventEndTime = mutableStateOf(LocalDateTime.now().plusHours(1))
     val eventEndTime: State<LocalDateTime> = _eventEndTime
 
-    private val _groupId = mutableIntStateOf(1)
+    private val _groupId = mutableIntStateOf(0)
     val groupId: State<Int> = _groupId
 
     private val _eventTags = mutableStateListOf<String>()

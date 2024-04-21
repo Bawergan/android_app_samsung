@@ -6,16 +6,16 @@ import com.example.final_project_samsung.app.data.data_source.eventData.toEvent
 import com.example.final_project_samsung.app.domain.model.Event
 import com.example.final_project_samsung.app.domain.repository.EventRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import java.time.LocalDateTime
 
 class EventRepositoryImpl(
     private val dao: EventDao
 ) : EventRepository {
     override fun getEvents(): Flow<List<Event>> {
-//        return dao.getEvents().map { it.map { result -> result.toEvent() } }
+        return dao.getEvents().map { it.map { result -> result.toEvent() } }
 
-        return flowOf(fakeRepo)
+//        return flowOf(fakeRepo)
     }
 
     override suspend fun getEventsById(id: Int): Event? {
@@ -31,7 +31,7 @@ class EventRepositoryImpl(
     }
 }
 
-val fakeRepo = listOf(
+private val fakeRepo = listOf(
     Event(
         eventName = "my first title",
         eventId = 1,
@@ -68,8 +68,8 @@ val fakeRepo = listOf(
         eventName = "Current Time Event",
         eventId = 4,
         eventTags = mutableListOf("my first title"),
-        startTime = LocalDateTime.now(),
-        endTime = LocalDateTime.now().plusHours(1),
+        startTime = LocalDateTime.now().plusHours(2),
+        endTime = LocalDateTime.now().plusHours(3),
         groupId = 0
     ),
 )

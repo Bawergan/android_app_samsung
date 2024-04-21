@@ -21,7 +21,6 @@ fun CustomLazyLayout(
     content: CustomLazyListScope.() -> Unit
 ) {
     val itemProvider = rememberItemProvider(content)
-
     LazyLayout(modifier = modifier
         .clipToBounds()
         .lazyLayoutPointerInput(state),
@@ -58,8 +57,8 @@ private fun Placeable.PlacementScope.placeItem(
     listItem: ListItem,
     placeables: List<Placeable>
 ) {
-    val xPosition = listItem.x - state.offsetState.value.x
-    val yPosition = listItem.y - state.offsetState.value.y
+    val xPosition = listItem.fromX - state.offsetState.value.x
+    val yPosition = listItem.fromY - state.offsetState.value.y
 
     placeables.forEach { placeable ->
         placeable.placeRelative(

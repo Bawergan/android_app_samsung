@@ -44,10 +44,20 @@ class ItemProvider(
 
         itemsState.value.forEachIndexed { index, itemContent ->
             val listItem = itemContent.item
-            if (listItem.x in boundaries.fromX..boundaries.toX &&
-                listItem.y in boundaries.fromY..boundaries.toY
-            ) {
-                result.add(index)
+            var isYOutOfBounds = true
+            for (y in listItem.fromY..listItem.toY) {
+                if (y in boundaries.fromY..boundaries.toY) {
+                    isYOutOfBounds = false
+                    break
+                }
+            }
+            if (!isYOutOfBounds) {
+                for (x in listItem.fromX..listItem.toX) {
+                    if (x in boundaries.fromX..boundaries.toX) {
+                        result.add(index)
+                        break
+                    }
+                }
             }
         }
 

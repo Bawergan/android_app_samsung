@@ -6,9 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntOffset
-import com.example.final_project_samsung.app.presentation.groups.State
-import java.time.LocalDateTime
-import java.time.ZoneOffset
 
 @Composable
 fun rememberLazyLayoutState(): LazyLayoutState {
@@ -18,20 +15,19 @@ fun rememberLazyLayoutState(): LazyLayoutState {
 @Stable
 class LazyLayoutState {
 
-    private val _offsetState = mutableStateOf(
+    private val _offsetLayoutState = mutableStateOf(
         IntOffset(
             0,
-            ((LocalDateTime.now()
-                .toEpochSecond(ZoneOffset.UTC) / (60f * 60f)) * State().pdForHour.value).toInt()
+            0
         )
     )
-    val offsetState = _offsetState
+    val offsetState = _offsetLayoutState
 
     fun onDrag(offset: IntOffset) {
-        val x = (_offsetState.value.x - offset.x).coerceAtLeast(0)
-        val y = (_offsetState.value.y - offset.y).coerceAtLeast(0)
+        val x = (_offsetLayoutState.value.x - offset.x).coerceAtLeast(0)
+        val y = (_offsetLayoutState.value.y - offset.y)
         if (x < 100) {
-            _offsetState.value = IntOffset(x, y)
+            _offsetLayoutState.value = IntOffset(x, y)
         }
     }
 
