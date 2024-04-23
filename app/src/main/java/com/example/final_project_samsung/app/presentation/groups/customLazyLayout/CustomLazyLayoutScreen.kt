@@ -2,8 +2,11 @@ package com.example.final_project_samsung.app.presentation.groups.customLazyLayo
 
 import android.content.res.Resources
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -36,19 +39,22 @@ fun CustomLazyLayoutScreen(state: GroupsUiState, navController: NavController) {
     val lazyLayoutState = rememberLazyLayoutState()
     val color = MaterialTheme.colorScheme.outlineVariant
     state._currentTime.value = LocalDateTime.now()
+    val cllWidth =
+        ((state.groupList.size - (DISPLAY_RESOLUTION[1] / state.pdForGroup.toFloat())) * state.pdForGroup)
+
     Canvas(modifier = Modifier.fillMaxSize()) {
         val offsetForOffset = (state._currentTime.value.minute / 60f) * state.pdForHour
         var offset = lazyLayoutState.offsetState.value.toOffset()
-        val hours = (DISPLAY_RESOLUTION[1] / state.pdForHour.toFloat()).roundToInt()
-        val groups = (DISPLAY_RESOLUTION[0] / state.pdForGroup.toFloat()).roundToInt()
+        val hours = (DISPLAY_RESOLUTION[0] / state.pdForHour.toFloat()).roundToInt()
+        val groups = (DISPLAY_RESOLUTION[1] / state.pdForGroup.toFloat()).roundToInt()
         offset = Offset(
             offset.x % (state.groupList.size * state.pdForGroup).toFloat(),
             (offset.y % (state.pdForHour).toFloat()) + state.pdForHour + offsetForOffset
         )
 
         repeat(hours + 1) {
-            val x = ((state.groupList.size * 0.5) * state.pdForGroup).toFloat()
-            val y = (it * state.pdForHour).toFloat()
+            val x = (state.groupList.size * state.pdForGroup * DISPLAY_DENSITY)
+            val y = (it * state.pdForHour * DISPLAY_DENSITY)
             drawLine(
                 color,
                 start = Offset(0f, y) - offset,
@@ -56,12 +62,12 @@ fun CustomLazyLayoutScreen(state: GroupsUiState, navController: NavController) {
                 2f
             )
         }
-        repeat(groups + 1) {
-            val x = (state.pdForHour * it).toFloat()
+        repeat(state.groupList.size + 1) {
+            val x = (state.pdForGroup * it * DISPLAY_DENSITY)
             drawLine(
                 color,
                 start = Offset(x, 0f) - offset,
-                end = Offset(x, (25 * state.pdForHour).toFloat()) - offset,
+                end = Offset(x, (25 * state.pdForHour * DISPLAY_DENSITY)) - offset,
                 2f
             )
         }
@@ -69,6 +75,7 @@ fun CustomLazyLayoutScreen(state: GroupsUiState, navController: NavController) {
     CustomLazyLayout(
         state = lazyLayoutState,
         modifier = Modifier.fillMaxSize(),
+        cllWidth = cllWidth
     ) {
         items(state.items) { item ->
             when (item.itemType) {
@@ -84,16 +91,15 @@ fun CustomLazyLayoutScreen(state: GroupsUiState, navController: NavController) {
                             )
                         },
                         modifier = Modifier.requiredSize(
-                            width = (state.pdForGroup / DISPLAY_DENSITY).dp,
-                            height = ((item.toY - item.fromY) / DISPLAY_DENSITY).dp
+                            width = (state.pdForGroup).dp,
+                            height = ((item.toY - item.fromY)).dp
                         )
                     ) {
                         item.dataArray?.let { EventCard(it, state.pdForHour) }
                     }
                 }
 
-                ItemType.Line -> TODO()
-                ItemType.Group -> TODO()
+                else -> {}
             }
         }
         item(
@@ -106,7 +112,36 @@ fun CustomLazyLayoutScreen(state: GroupsUiState, navController: NavController) {
         ) {
             TimeLineCard(state.groupList.size, state.pdForGroup)
         }
+        item(GROUP_BAR) {
+            Row(Modifier.background(MaterialTheme.colorScheme.background)) {
+                state.groupList.forEach { group ->
+
+                    Box(modifier = Modifier
+                        .clickable {
+                            navController.navigate(
+                                TheAppDestinations.ADD_EDIT_GROUP_ROUTE + "?groupId=${
+                                    group.id
+                                }"
+                            )
+                        }
+
+                        .width((state.pdForGroup).dp)
+                    ) {
+                        GroupItem(
+                            group.groupName
+                        )
+                    }
+                }
+            }
+
+        }
     }
+}
+
+@Preview
+@Composable
+fun GroupItem(groupName: String = "PreviewGroup", modifier: Modifier = Modifier) {
+    Text(text = groupName, modifier = modifier, style = MaterialTheme.typography.labelSmall)
 }
 
 @Preview
@@ -167,3 +202,13 @@ val TIME_LINE = ListItem(
     dataArray = null,
     itemType = ItemType.Line
 )
+
+val GROUP_BAR = ListItem(
+    fromX = 0,
+    fromY = 0,
+    toX = 1,
+    toY = 1,
+    dataArray = null,
+    itemType = ItemType.Group,
+
+    )

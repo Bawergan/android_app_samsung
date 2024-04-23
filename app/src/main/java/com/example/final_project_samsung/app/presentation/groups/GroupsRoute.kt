@@ -1,10 +1,10 @@
 package com.example.final_project_samsung.app.presentation.groups
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
@@ -16,10 +16,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.TopAppBarState
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -31,7 +27,6 @@ import com.example.final_project_samsung.R
 import com.example.final_project_samsung.app.presentation.appNavigation.TheAppDestinations
 import com.example.final_project_samsung.app.presentation.groups.customLazyLayout.CustomLazyLayoutScreen
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun GroupsRoute(
     groupsViewModel: GroupsViewModel = hiltViewModel(),
@@ -40,9 +35,8 @@ fun GroupsRoute(
     navController: NavController,
 ) {
     val groupsUiState by groupsViewModel.state.collectAsStateWithLifecycle()
-    val topAppBarState = rememberTopAppBarState()
     Scaffold(
-        topBar = { GroupsTopAppBar(openDrawer = openDrawer, topAppBarState = topAppBarState) },
+        topBar = { GroupsTopAppBar(openDrawer = openDrawer) },
         floatingActionButton = {
             FloatingActionButtonManager(groupsUiState, navController)
         }
@@ -94,11 +88,8 @@ fun FloatingActionButtonManager(groupsUiState: GroupsUiState, navController: Nav
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun GroupsTopAppBar(
-    openDrawer: () -> Unit,
     modifier: Modifier = Modifier,
-    topAppBarState: TopAppBarState = rememberTopAppBarState(),
-    scrollBehavior: TopAppBarScrollBehavior? =
-        TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
+    openDrawer: () -> Unit
 ) {
     TopAppBar(
         title = {
@@ -113,7 +104,15 @@ private fun GroupsTopAppBar(
                 )
             }
         },
-        scrollBehavior = scrollBehavior,
-        modifier = modifier
+        modifier = modifier,
+        actions = {
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(
+                    imageVector = Icons.Filled.AccountCircle,
+                    contentDescription = "Profile information",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
     )
 }

@@ -1,4 +1,4 @@
-package com.example.final_project_samsung.app.presentation.addEditScreen.forEvent
+package com.example.final_project_samsung.app.presentation.addEditScreen.forGroup
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -29,8 +30,9 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.final_project_samsung.app.presentation.addEditScreen.forGroup.AddEditGroupEvent
-import com.example.final_project_samsung.app.presentation.addEditScreen.forGroup.AddEditGroupViewModel
+import com.example.final_project_samsung.app.presentation.addEditScreen.forEvent.CustomButton
+import com.example.final_project_samsung.app.presentation.addEditScreen.forEvent.myButtonColors
+import com.example.final_project_samsung.app.presentation.addEditScreen.forEvent.myTextFieldColors
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -100,8 +102,22 @@ fun AddEditGroupBottomSheet(
                                 )
                             )
                         )
-                    }
 
+                    }
+                    if (addEditGroupViewModel.groupId.value != null) {
+                        Row(
+                            Modifier.padding(start = TOP_ROW_HEIGHT, end = TOP_ROW_HEIGHT),
+                        ) {
+                            Spacer(modifier = Modifier.width(RIGHT_COLUMN_WIDTH))
+                            CustomButton(onClick = {
+                                if (!isClosingState.value) {
+                                    addEditGroupViewModel.onEvent(AddEditGroupEvent.Delete)
+                                }
+                            }, colors = myButtonColors()) {
+                                Icon(Icons.Filled.Delete, contentDescription = "Delete event")
+                            }
+                        }
+                    }
                 }
                 Box(
                     Modifier

@@ -11,6 +11,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntOffset
+import com.example.final_project_samsung.app.presentation.groups.customLazyLayout.ItemType
 import com.example.final_project_samsung.app.presentation.groups.customLazyLayout.ListItem
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -18,12 +19,13 @@ import com.example.final_project_samsung.app.presentation.groups.customLazyLayou
 fun CustomLazyLayout(
     modifier: Modifier = Modifier,
     state: LazyLayoutState = rememberLazyLayoutState(),
-    content: CustomLazyListScope.() -> Unit
+    cllWidth: Float,
+    content: CustomLazyListScope.() -> Unit,
 ) {
     val itemProvider = rememberItemProvider(content)
     LazyLayout(modifier = modifier
         .clipToBounds()
-        .lazyLayoutPointerInput(state),
+        .lazyLayoutPointerInput(state, cllWidth),
         itemProvider = { itemProvider }) { constraints ->
         val boundaries = state.getBoundaries(constraints)
         val indexes = itemProvider.getItemIndexesInRange(boundaries)
@@ -43,11 +45,11 @@ fun CustomLazyLayout(
 }
 
 @SuppressLint("ModifierFactoryUnreferencedReceiver")
-private fun Modifier.lazyLayoutPointerInput(state: LazyLayoutState): Modifier {
+private fun Modifier.lazyLayoutPointerInput(state: LazyLayoutState, cllWidth: Float): Modifier {
     return pointerInput(Unit) {
         detectDragGestures { change, dragAmount ->
             change.consume()
-            state.onDrag(IntOffset(dragAmount.x.toInt(), dragAmount.y.toInt()))
+            state.onDrag(IntOffset(dragAmount.x.toInt(), dragAmount.y.toInt()), cllWidth)
         }
     }
 }
@@ -57,9 +59,20 @@ private fun Placeable.PlacementScope.placeItem(
     listItem: ListItem,
     placeables: List<Placeable>
 ) {
-    val xPosition = listItem.fromX - state.offsetState.value.x
-    val yPosition = listItem.fromY - state.offsetState.value.y
+    var xPosition = 0
+    var yPosition = 0
+    when (listItem.itemType) {
+        ItemType.Group -> {
+            xPosition = listItem.fromX - state.offsetState.value.x
+            yPosition = listItem.fromY
+        }
 
+        else -> {
+            xPosition = listItem.fromX - state.offsetState.value.x
+            yPosition = listItem.fromY - state.offsetState.value.y
+
+        }
+    }
     placeables.forEach { placeable ->
         placeable.placeRelative(
             xPosition,

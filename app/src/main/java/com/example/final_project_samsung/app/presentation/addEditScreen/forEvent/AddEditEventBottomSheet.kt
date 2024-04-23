@@ -332,18 +332,6 @@ fun Preview() {
                     CustomButton(onClick = {
                     }, modifier = Modifier.size(55.dp, 35.dp)) { Text(text = "Save") }
                 }
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(40.dp), contentAlignment = Alignment.CenterStart
-                ) {
-                    CustomButton(
-                        modifier = Modifier.background(MaterialTheme.colorScheme.background),
-                        onClick = {
-                        }, colors = myButtonColors()
-                    ) { Icon(Icons.Filled.Close, contentDescription = "Close edit screen") }
-                }
-
             }
         }
     }

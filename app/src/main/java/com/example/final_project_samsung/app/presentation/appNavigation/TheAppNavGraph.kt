@@ -11,7 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.final_project_samsung.app.presentation.addEditScreen.forEvent.AddEditEventBottomSheet
-import com.example.final_project_samsung.app.presentation.addEditScreen.forEvent.AddEditGroupBottomSheet
+import com.example.final_project_samsung.app.presentation.addEditScreen.forGroup.AddEditGroupBottomSheet
 import com.example.final_project_samsung.app.presentation.events.EventsRoute
 import com.example.final_project_samsung.app.presentation.events.EventsViewModel
 import com.example.final_project_samsung.app.presentation.groups.GroupsRoute
@@ -88,6 +88,5 @@ fun TheAppNavGraph(
         ) {
             AddEditGroupBottomSheet(navController = navController)
         }
-
     }
 }

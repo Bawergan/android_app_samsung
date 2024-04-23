@@ -7,5 +7,5 @@ typealias ComposableItemContent = @Composable (ListItem) -> Unit
 
 data class LazyLayoutItemContent(
     val item: ListItem,
-    val itemContent: ComposableItemContent
+    val itemContent: ComposableItemContent,
 )

@@ -23,12 +23,12 @@ class LazyLayoutState {
     )
     val offsetState = _offsetLayoutState
 
-    fun onDrag(offset: IntOffset) {
-        val x = (_offsetLayoutState.value.x - offset.x).coerceAtLeast(0)
+    fun onDrag(offset: IntOffset, cllWidth: Float) {
+        val x =
+            (_offsetLayoutState.value.x - offset.x).coerceAtMost(cllWidth.toInt()).coerceAtLeast(0)
         val y = (_offsetLayoutState.value.y - offset.y)
-        if (x < 100) {
-            _offsetLayoutState.value = IntOffset(x, y)
-        }
+        _offsetLayoutState.value = IntOffset(x, y)
+
     }
 
     fun getBoundaries(

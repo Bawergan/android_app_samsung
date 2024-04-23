@@ -27,7 +27,6 @@ class GroupsViewModel @Inject constructor(
 
     private var getEventsJob: Job? = null
     private var getGroupsJob: Job? = null
-    private var inflateJob: Job? = null
 
     init {
         lunchJobs()

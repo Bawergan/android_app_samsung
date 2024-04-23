@@ -7,6 +7,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import com.example.final_project_samsung.app.presentation.groups.customLazyLayout.ItemType
 import com.example.final_project_samsung.app.presentation.groups.customLazyLayout.ListItem
 
 @Composable
@@ -44,23 +45,33 @@ class ItemProvider(
 
         itemsState.value.forEachIndexed { index, itemContent ->
             val listItem = itemContent.item
-            var isYOutOfBounds = true
-            for (y in listItem.fromY..listItem.toY) {
-                if (y in boundaries.fromY..boundaries.toY) {
-                    isYOutOfBounds = false
-                    break
+            when (listItem.itemType) {
+                ItemType.Group -> {
+                    result.add(index)
                 }
-            }
-            if (!isYOutOfBounds) {
-                for (x in listItem.fromX..listItem.toX) {
-                    if (x in boundaries.fromX..boundaries.toX) {
-                        result.add(index)
-                        break
-                    }
-                }
-            }
-        }
 
+                else -> {
+                    var isYOutOfBounds = true
+                    for (y in listItem.fromY..listItem.toY) {
+                        if (y in boundaries.fromY..boundaries.toY) {
+                            isYOutOfBounds = false
+                            break
+                        }
+                    }
+                    if (!isYOutOfBounds) {
+                        for (x in listItem.fromX..listItem.toX) {
+                            if (x in boundaries.fromX..boundaries.toX) {
+                                result.add(index)
+                                break
+                            }
+                        }
+
+                    }
+
+                }
+            }
+
+        }
         return result
     }
 
